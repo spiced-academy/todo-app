@@ -1,7 +1,7 @@
 "use client";
 import MainContainer from "@/components/Navigation/MainContainer";
 import { Spinner, Box, Heading } from "@chakra-ui/react";
-import { React } from "react";
+import { React, useEffect } from "react";
 import Layout from "@/components/Layout/Layout";
 import TaskList from "@/components/TaskList/TaskList";
 import useSWR from "swr";
@@ -13,10 +13,12 @@ const IndexPage = () => {
   const { data: tasks, isLoading, error } = useSWR("/api/tasks");
 
   const setActiveList = useTaskStore((state) => state.setActiveList);
-  setActiveList("TaskTango - Home Page");
-
   const setCountingTasks = useTaskStore((state) => state.setCountingTasks);
-  setCountingTasks(tasks);
+  useEffect(() => {
+    setActiveList("TaskTango - Home Page");
+    tasks && setCountingTasks(tasks);
+  });
+
   if (!tasks) {
     return;
   }
