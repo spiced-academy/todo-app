@@ -1,5 +1,4 @@
 export default async function AddTask(taskTitle) {
-  console.log(taskTitle);
   try {
     const response = await fetch(`/api/tasks`, {
       method: "POST",
