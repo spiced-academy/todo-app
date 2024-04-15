@@ -111,20 +111,20 @@ export default function TaskList({ tasks }) {
   return (
     <UnorderedList styleType="none" spacing={2} marginTop={5}>
       {filteredTasks.map((task) => (
-        <ListItem key={task._id}>
+        <ListItem key={task.id}>
           <Flex alignItems="center">
             <HStack spacing="12px">
               <Checkbox
                 colorScheme="teal"
-                key={task._id}
+                key={task.id}
                 isChecked={task.completed}
-                onChange={() => handleCompletedTask(task._id)}
+                onChange={() => handleCompletedTask(task.id)}
               ></Checkbox>
 
               <Editable
                 
                 defaultValue={task.title}
-                onSubmit={(nextValue) => handleEditTask(task._id, nextValue)}
+                onSubmit={(nextValue) => handleEditTask(task.id, nextValue)}
               >
                 <EditablePreview as={task.completed ? "del" : ""} />
                 <Input
@@ -141,7 +141,7 @@ export default function TaskList({ tasks }) {
               color="red.300"
               margin="10px"
               icon={<DeleteIcon />}
-              onClick={() => handleDeleteTask(task._id)}
+              onClick={() => handleDeleteTask(task.id)}
             />
           </Flex>
           <Divider />
