@@ -1,0 +1,9 @@
+# This is a simple example of GHA
+name: say-hello-Spiced-actions
+run-name: ${{ github.actor }} Hello Spiced!
+on: [push]
+jobs:
+  hello-testbash:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Hello Spiced!"
