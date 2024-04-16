@@ -1,3 +1,4 @@
+import { FC } from "react";
 import {
   Checkbox,
   ListItem,
@@ -21,7 +22,17 @@ import { useSWRConfig } from "swr";
 import { useTaskStore } from "@/store";
 import JSConfetti from "js-confetti";
 
-export default function TaskList({ tasks }) {
+interface Task {
+  _id: string;
+  title: string;
+  completed: boolean;
+}
+
+interface TaskListProps {
+  tasks: Task[];
+}
+
+const TaskList: FC<TaskListProps> = ({ tasks }) => {
   const toast = useToast();
   const { mutate } = useSWRConfig();
   const funMode = useTaskStore((state) => state.funMode);
@@ -32,7 +43,7 @@ export default function TaskList({ tasks }) {
     task.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleDeleteTask = async (taskId) => {
+  const handleDeleteTask = async (taskId: string) => {
     try {
       await deleteTask(taskId);
       mutate("/api/tasks");
@@ -45,21 +56,26 @@ export default function TaskList({ tasks }) {
       });
     } catch (error) {
       mutate("/api/tasks");
+      const message = (error as Error).message; 
       toast({
         title: "Error deleting task",
-        description: error.message,
+        description: message,
         status: "error",
         duration: 5000,
         isClosable: true,
       });
     }
   };
-  const handleEditTask = async (taskId, nextValue) => {
+  const handleEditTask = async (taskId: string, nextValue: string) => {
     try {
       mutate(
         "/api/tasks",
-        (data) => {
-          return data.map((task) => {
+        // handle the case when data is undefined
+        (data: Task[] | undefined) => {
+          if (!data) {
+            return [];
+          }
+          return data.map((task: Task) => {
             if (task._id === taskId) {
               return { ...task, title: nextValue };
             }
@@ -69,7 +85,7 @@ export default function TaskList({ tasks }) {
         true
       );
       await editTask(taskId, nextValue);
-
+    
       mutate("/api/tasks");
     } catch (error) {
       mutate("/api/tasks");
@@ -126,7 +142,11 @@ export default function TaskList({ tasks }) {
                 defaultValue={task.title}
                 onSubmit={(nextValue) => handleEditTask(task._id, nextValue)}
               >
-                <EditablePreview as={task.completed ? "del" : ""} />
+                {task.completed ? (
+                  <EditablePreview as="del" />
+                ) : (
+                  <EditablePreview />
+                )}
                 <Input
                   as={EditableInput}
                   focusBorderColor="teal.400"

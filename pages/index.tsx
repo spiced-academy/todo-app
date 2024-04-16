@@ -1,7 +1,6 @@
-"use client";
+import { FC } from "react";
 import MainContainer from "@/components/Navigation/MainContainer";
 import { Spinner, Box, Heading } from "@chakra-ui/react";
-import { React } from "react";
 import Layout from "@/components/Layout/Layout";
 import TaskList from "@/components/TaskList/TaskList";
 import useSWR from "swr";
@@ -9,16 +8,42 @@ import { useTaskStore } from "@/store";
 import AddTaskInput from "@/components/Task/AddTaskInput";
 import SetupModal from "@/components/Modal/Modal";
 
-const IndexPage = () => {
-  const { data: tasks, isLoading, error } = useSWR("/api/tasks");
+// Define a type for tasks
+type Task = {
+  id: string;
+  title: string;
+  completed: boolean;
+};
 
-  const setActiveList = useTaskStore((state) => state.setActiveList);
+// Define a type for the state and actions of the task store
+type TaskStore = {
+  funMode: boolean;
+  setupMode: boolean;
+  finishSetup: () => void;
+  activeList: string | null;
+  setActiveList: (newActiveList: string) => void;
+  searchTerm: string;
+  setSearchTerm: (newSearchTerm: string) => void;
+  toggleFunMode: () => void;
+  countingTasks: Task[];
+  setCountingTasks: (newCountingTasks: Task[]) => void;
+  countCompletedTasks: number;
+  countActiveTasks: number;
+  setCountCompletedTasks: () => void;
+  setActiveTasks: () => void;
+};
+
+const IndexPage: FC = () => {
+  const { data: tasks, isLoading, error } = useSWR<Task[], Error>("/api/tasks");
+
+  const setActiveList = useTaskStore((state: unknown) => (state as TaskStore).setActiveList);
   setActiveList("TaskTango - Home Page");
-
-  const setCountingTasks = useTaskStore((state) => state.setCountingTasks);
-  setCountingTasks(tasks);
+  const setCountingTasks = useTaskStore((state: unknown) => (state as TaskStore).setCountingTasks);
+  if (tasks) {
+    setCountingTasks(tasks);
+  }
   if (!tasks) {
-    return;
+    return null;
   }
 
   if (isLoading) {

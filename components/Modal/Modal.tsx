@@ -15,7 +15,7 @@ import {
 import { useTaskStore } from "@/store";
 import AddTaskInput from "../Task/AddTaskInput";
 
-const SetupModal = () => {
+const SetupModal: React.FC = () => {
   const setupMode = useTaskStore((state) => state.setupMode);
   const finishSetup = useTaskStore((state) => state.finishSetup);
 
