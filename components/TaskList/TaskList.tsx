@@ -170,3 +170,4 @@ const TaskList: FC<TaskListProps> = ({ tasks }) => {
     </UnorderedList>
   );
 }
+export default TaskList;

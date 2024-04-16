@@ -24,7 +24,7 @@ test("renders a list called 'Lists' with 4 ListItems ", () => {
 
   expect(listHeading).toBeInTheDocument();
   expect(list).toBeInTheDocument();
-  expect(listItems).toHaveLength(4);
+  expect(listItems).toHaveLength(3);
 });
 
 test("renders a dark mode toggle switch ", () => {

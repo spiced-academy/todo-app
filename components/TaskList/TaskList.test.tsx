@@ -1,8 +1,9 @@
 import TaskList from "./TaskList";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { Task } from '@/store';
 
-const tasks = [
+const tasks: Task[] = [
   { _id: 1, title: "Task 1", completed: false },
   { _id: 2, title: "Task 2", completed: false },
   { _id: 3, title: "Task 3", completed: false },
@@ -16,7 +17,7 @@ describe("view a list of tasks", () => {
 
     expect(screen.getByText("Task 1")).toBeInTheDocument();
 
-    const listItems = screen.getAllByRole("listitem");
+    const listItems: HTMLElement[] = screen.getAllByRole("listitem");
     expect(listItems.length).toBe(3);
 
   });
@@ -25,7 +26,7 @@ describe("view a list of tasks", () => {
     render(<TaskList tasks={tasks} />);
 
     // Trigger the completion of a task and check if the completed task is updated in the UI
-    const items = screen.getAllByRole("checkbox");
+    const items: HTMLElement[] = screen.getAllByRole("checkbox");
 
     await expect(fireEvent.click(items[0])).toBe(true);
     screen.debug();
@@ -33,11 +34,11 @@ describe("view a list of tasks", () => {
 
   it("handles delete task correctly", async () => {
     render(<TaskList tasks={tasks} />);
-    const listItems = screen.getAllByRole("listitem");
+    const listItems: HTMLElement[] = screen.getAllByRole("listitem");
     await expect(listItems.length).toBe(3);
 
     // Trigger deleting of a task and check if the deleted task is removed in the UI
-    const items = screen.getAllByRole("button", { name: "Delete a task" });
+    const items: HTMLElement[] = screen.getAllByRole("button", { name: "Delete a task" });
     fireEvent.click(items[0]);
 
     // await expect(listItems.length).toBe(2);
