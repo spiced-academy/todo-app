@@ -13,7 +13,7 @@ jest.mock("../Task/functions/completedTask");
 
 describe("view a list of tasks", () => {
   it("render the tasklist", () => {
-    const list = render(<TaskList tasks={tasks} />);
+    render(<TaskList tasks={tasks} />);
 
     expect(screen.getByText("Task 1")).toBeInTheDocument();
 
