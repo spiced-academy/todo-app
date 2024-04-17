@@ -23,7 +23,7 @@ import { useTaskStore } from "@/store";
 import JSConfetti from "js-confetti";
 
 interface TaskListProps {
-  tasks: Task[];
+  tasks: ITask[];
 }
 
 const TaskList: FC<TaskListProps> = ({ tasks }) => {
@@ -86,9 +86,9 @@ const TaskList: FC<TaskListProps> = ({ tasks }) => {
     }
   };
 
-  const handleCompletedTask = async (taskId) => {
+  const handleCompletedTask = async (taskId: string) => {
     try {
-      const task = await completedTask(taskId);
+      const task = await completedTask(taskId) as Task;
       if (task.completed) {
         if (funMode) {
           confetti.addConfetti({
@@ -108,7 +108,7 @@ const TaskList: FC<TaskListProps> = ({ tasks }) => {
     } catch (error) {
       toast({
         title: "Error completing task",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unknown error occurred",
         status: "error",
         duration: 5000,
         isClosable: true,

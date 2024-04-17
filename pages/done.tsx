@@ -15,7 +15,7 @@ const DonePage: FC = () => {
     data: doneTasks,
     isLoading,
     error,
-  } = useSWR<Task>("/api/tasks", async () =>
+  } = useSWR<Task[]>("/api/tasks", async () =>
     (await fetch("/api/status/done")).json()
   );
 
