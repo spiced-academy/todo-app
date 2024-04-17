@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Container, Heading, Box, Badge } from "@chakra-ui/react";
+import { Container, Heading, Box } from "@chakra-ui/react";
 
 interface MainContainerProps {
   mainTitle: string;

@@ -5,7 +5,7 @@ import MainContainer from "@/components/Navigation/MainContainer";
 import TaskList from "@/components/TaskList/TaskList";
 import useSWR from "swr";
 import { Spinner, Box, Heading } from "@chakra-ui/react";
-import { useTaskStore, State, Task } from "@/store";
+import { useTaskStore } from "@/store";
 
 const DonePage: FC = () => {
   const setActiveList = useTaskStore((state) => state.setActiveList);

@@ -1,8 +1,6 @@
 import TaskList from "./TaskList";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { Task } from '@/store';
-
 const tasks: Task[] = [
   { _id: "1", title: "Task 1", completed: false },
   { _id: "2", title: "Task 2", completed: false },

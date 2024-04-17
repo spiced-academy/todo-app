@@ -1,6 +1,5 @@
 import {
   CheckCircleIcon,
-  CopyIcon,
   RepeatClockIcon,
   HamburgerIcon,
 } from "@chakra-ui/icons";
