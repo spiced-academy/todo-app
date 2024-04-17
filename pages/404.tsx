@@ -22,7 +22,7 @@ const NotFoundPage: FC = () => {
         alignItems="center"
       >
         <h1 style={{ color: "black" }}>404 - Page Not Found</h1>
-        <p style={{ color: "black" }}>Lost? There's no place like home! </p>
+        <p style={{ color: "black" }}>Lost? There&apos;s no place like home! </p>
 
         <Link href="/">
           <Button
