@@ -4,6 +4,6 @@ export async function editTask(taskId, taskTitle) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(taskTitle),
+    body: JSON.stringify({title: taskTitle}),
   });
 }

@@ -24,7 +24,7 @@ export default async function handler(request, response) {
     }
 
     await Task.findByIdAndUpdate(id, {
-      $set: { title: request.body },
+      $set: { title: request.body.title },
     });
 
     response.status(200).json({
