@@ -1,6 +1,11 @@
 import { pool } from "@/db/pg_pool";
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(request, response) {
+import dbConnect from '@/db/connect';
+import Task from '@/db/models/Task';
+
+export default async function handler(request: NextApiRequest, response: NextApiResponse) {
+  await dbConnect();
 
   // await client.connect()
   if (request.method === "GET") {
@@ -19,7 +24,7 @@ export default async function handler(request, response) {
       // const task = new Task(taskTitle);
       // const record = await task.save();
       return response.status(201).json(record);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       return response.status(400).json({ error: error.message });
     }

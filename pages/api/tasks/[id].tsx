@@ -1,6 +1,10 @@
 import { pool } from "@/db/pg_pool";
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(request, response) {
+import dbConnect from '@/db/connect';
+import Task from '@/db/models/Task';
+
+export default async function handler(request: NextApiRequest, response: NextApiResponse) {
   const { id } = request.query;
 
   if (!id) {
