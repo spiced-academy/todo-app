@@ -24,9 +24,9 @@ export default async function handler(request: NextApiRequest, response: NextApi
       // const task = new Task(taskTitle);
       // const record = await task.save();
       return response.status(201).json(record);
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
-      return response.status(400).json({ error: error.message });
+      return response.status(400).json({ error: error instanceof Error ? error.message : "An unknown error occurred" });
     }
   }
 }

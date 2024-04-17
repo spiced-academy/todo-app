@@ -1,11 +1,12 @@
 "use client";
+
 import React, { FC } from "react";
 import Layout from "@/components/Layout/Layout";
 import MainContainer from "@/components/Navigation/MainContainer";
 import TaskList from "@/components/TaskList/TaskList";
 import useSWR from "swr";
 import { Spinner, Box, Heading } from "@chakra-ui/react";
-import { useTaskStore, State, Task } from "@/store";
+import { useTaskStore } from "@/store";
 
 const DonePage: FC = () => {
   const setActiveList = useTaskStore((state) => state.setActiveList);
@@ -15,7 +16,7 @@ const DonePage: FC = () => {
     data: doneTasks,
     isLoading,
     error,
-  } = useSWR<Task>("/api/tasks", async () =>
+  } = useSWR<Task[]>("/api/tasks", async () =>
     (await fetch("/api/status/done")).json()
   );
 
@@ -50,7 +51,7 @@ const DonePage: FC = () => {
   return (
     <Layout title="TaskTango - Done">
       <MainContainer mainTitle="Done">
-        <TaskList tasks={doneTasks.countingTasks} />
+        <TaskList tasks={doneTasks} />
       </MainContainer>
     </Layout>
   );

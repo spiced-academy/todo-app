@@ -1,6 +1,5 @@
 import {
   CheckCircleIcon,
-  CopyIcon,
   RepeatClockIcon,
   HamburgerIcon,
 } from "@chakra-ui/icons";
@@ -18,7 +17,7 @@ import { useTaskStore } from "@/store";
 
 const ListsSection: React.FC = () => {
   const activeList = useTaskStore((state) => state.activeList);
-  let countingTasks = useTaskStore((state) => state.countingTasks);
+  const countingTasks = useTaskStore((state) => state.countingTasks);
 
   const numberOfDoneTasks = countingTasks.filter(
     (task) => task.completed
