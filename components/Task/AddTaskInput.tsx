@@ -1,8 +1,10 @@
-import { Input, InputLeftElement, InputGroup } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
-import AddTask from "./Functions/addTask";
-import { useSWRConfig } from "swr";
-import { FormEvent } from "react";
+import { FormEvent } from 'react';
+import { useSWRConfig } from 'swr';
+
+import { AddIcon } from '@chakra-ui/icons';
+import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
+
+import AddTask from './Functions/addTask';
 
 interface AddTaskInputProps {
   afterSubmit?: () => void;
@@ -14,7 +16,8 @@ export default function AddTaskInput({ afterSubmit }: AddTaskInputProps) {
   const handleSubmit = async (event: FormEvent) => {
 
     event.preventDefault();
-    const formData = new FormData(event.currentTarget as HTMLFormElement);
+    const form = event.currentTarget as HTMLFormElement;
+    const formData = new FormData(form);
     const taskTitle = Object.fromEntries(formData.entries());
 
     try {
@@ -22,10 +25,11 @@ export default function AddTaskInput({ afterSubmit }: AddTaskInputProps) {
       await AddTask(title);
       mutate("/api/tasks");
 
-      const inputElement = (event.currentTarget as HTMLFormElement).elements.namedItem('title') as HTMLInputElement;
+      const inputElement = form.elements.namedItem('title') as HTMLInputElement;
+
       inputElement && inputElement.focus();
 
-      (event.currentTarget as HTMLFormElement).reset();
+      form.reset();
 
       // with this, we can let the caller know that submit has been successfully handled
       if (afterSubmit && typeof afterSubmit === "function") {
