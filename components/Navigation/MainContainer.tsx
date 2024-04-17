@@ -1,7 +1,12 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Container, Heading, Box, Badge } from "@chakra-ui/react";
 
-export default function MainContainer({ mainTitle, children }) {
+interface MainContainerProps {
+  mainTitle: string;
+  children: ReactNode;
+}
+
+const MainContainer: React.FC<MainContainerProps> = ({ mainTitle, children }) => {
   return (
     <Box
       p="6"
@@ -15,12 +20,9 @@ export default function MainContainer({ mainTitle, children }) {
     >
       <Container>
         <Heading
-         
           pb={8}
           as="h3"
           size="3xl"
-          
-          
         >
           {mainTitle}
         </Heading>
@@ -29,3 +31,5 @@ export default function MainContainer({ mainTitle, children }) {
     </Box>
   );
 }
+
+export default MainContainer;

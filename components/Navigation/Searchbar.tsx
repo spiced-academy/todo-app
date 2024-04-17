@@ -7,13 +7,13 @@ import {
 } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import { useTaskStore } from "@/store";
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 
 export default function Search() {
   const setSearchTerm = useTaskStore((state) => state.setSearchTerm);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState<string>("");
 
-  const handleSearchChange = (event) => {
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
     setSearchTerm(event.target.value);
   };
@@ -24,7 +24,7 @@ export default function Search() {
   };
 
   return (
-    <form width="100%">
+    <form style={{width: "100px"}} onSubmit={(e: FormEvent) => e.preventDefault()}>
       <InputGroup>
         <InputLeftElement pointerEvents="none">
           <Search2Icon color="black" />

@@ -1,7 +1,7 @@
 import { useTaskStore } from "@/store";
 import { FormControl, FormLabel, Switch } from "@chakra-ui/react";
 
-export default function FunMode() {
+const FunMode: React.FC = () => {
   const [funMode, toggleFunMode] = useTaskStore((state) => [
     state.funMode,
     state.toggleFunMode,
@@ -20,3 +20,5 @@ export default function FunMode() {
     </FormControl>
   );
 }
+
+export default FunMode;

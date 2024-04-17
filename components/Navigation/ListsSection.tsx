@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { useTaskStore } from "@/store";
 
-export default function ListsSection() {
+const ListsSection: React.FC = () => {
   const activeList = useTaskStore((state) => state.activeList);
   let countingTasks = useTaskStore((state) => state.countingTasks);
 
@@ -125,3 +125,5 @@ export default function ListsSection() {
     </>
   );
 }
+
+export default ListsSection;

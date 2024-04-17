@@ -10,7 +10,7 @@ import ListsSection from "./ListsSection";
 import DarkMode from "./DarkMode";
 import FunMode from "./FunMode";
 
-export default function MenuContainer() {
+const MenuContainer: React.FC = () => {
   const bg = useColorModeValue("gray.200", "gray.700");
 
   return (
@@ -27,9 +27,9 @@ export default function MenuContainer() {
       
     >
       
-      <Flex direction={["none", "column"]} gap={["0", "2"]}>
+      <Flex display={["none", "flex"]} direction="column" gap={["0", "2"]}>
         <Box display={["none", "unset"]}>
-          <Heading paddingbottom="10px" as="h5" size="2xl" mb={8}>
+          <Heading paddingBottom="10px" as="h5" size="2xl" mb={8}>
             Menu
           </Heading>
           
@@ -46,3 +46,5 @@ export default function MenuContainer() {
     </Box>
   );
 }
+
+export default MenuContainer;
