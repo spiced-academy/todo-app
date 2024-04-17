@@ -1,8 +1,9 @@
+"use client";
 import React, { FC } from "react";
 import Head from "next/head";
 import { Box, Button, Link } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import errorImage from "../lib/images/svg/404-Teal.svg";
+import errorImage from "@/lib/images/svg/404-Teal.svg";
 
 const NotFoundPage: FC = () => {
   return (
