@@ -8,31 +8,6 @@ import { useTaskStore } from "@/store";
 import AddTaskInput from "@/components/Task/AddTaskInput";
 import SetupModal from "@/components/Modal/Modal";
 
-// Define a type for tasks
-type Task = {
-  id: string;
-  title: string;
-  completed: boolean;
-};
-
-// Define a type for the state and actions of the task store
-type TaskStore = {
-  funMode: boolean;
-  setupMode: boolean;
-  finishSetup: () => void;
-  activeList: string | null;
-  setActiveList: (newActiveList: string) => void;
-  searchTerm: string;
-  setSearchTerm: (newSearchTerm: string) => void;
-  toggleFunMode: () => void;
-  countingTasks: Task[];
-  setCountingTasks: (newCountingTasks: Task[]) => void;
-  countCompletedTasks: number;
-  countActiveTasks: number;
-  setCountCompletedTasks: () => void;
-  setActiveTasks: () => void;
-};
-
 const IndexPage: FC = () => {
   const { data: tasks, isLoading, error } = useSWR<Task[], Error>("/api/tasks");
 

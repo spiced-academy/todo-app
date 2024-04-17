@@ -22,12 +22,6 @@ import { useSWRConfig } from "swr";
 import { useTaskStore } from "@/store";
 import JSConfetti from "js-confetti";
 
-interface Task {
-  _id: string;
-  title: string;
-  completed: boolean;
-}
-
 interface TaskListProps {
   tasks: Task[];
 }
