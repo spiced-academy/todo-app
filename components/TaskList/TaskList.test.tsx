@@ -4,9 +4,9 @@ import "@testing-library/jest-dom";
 import { Task } from '@/store';
 
 const tasks: Task[] = [
-  { _id: 1, title: "Task 1", completed: false },
-  { _id: 2, title: "Task 2", completed: false },
-  { _id: 3, title: "Task 3", completed: false },
+  { _id: "1", title: "Task 1", completed: false },
+  { _id: "2", title: "Task 2", completed: false },
+  { _id: "3", title: "Task 3", completed: false },
 ];
 
 jest.mock("../Task/functions/completedTask");
