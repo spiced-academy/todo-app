@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import MainContainer from "@/components/Navigation/MainContainer";
 import { Spinner, Box, Heading } from "@chakra-ui/react";
 import Layout from "@/components/Layout/Layout";
@@ -37,11 +37,13 @@ const IndexPage: FC = () => {
   const { data: tasks, isLoading, error } = useSWR<Task[], Error>("/api/tasks");
 
   const setActiveList = useTaskStore((state: unknown) => (state as TaskStore).setActiveList);
-  setActiveList("TaskTango - Home Page");
   const setCountingTasks = useTaskStore((state: unknown) => (state as TaskStore).setCountingTasks);
-  if (tasks) {
-    setCountingTasks(tasks);
-  }
+
+  useEffect(() => {
+    setActiveList("TaskTango - Home Page");
+    tasks && setCountingTasks(tasks);
+  });
+
   if (!tasks) {
     return null;
   }
