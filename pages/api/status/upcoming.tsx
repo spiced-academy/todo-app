@@ -1,13 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import dbConnect from '@/db/connect';
-import Task from '@/db/models/Task';
+import { pool } from '@/db/pg_pool';
 
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
-  await dbConnect();
-
   if (request.method === "GET") {
-    const tasks = await Task.find({ completed: false }).sort('-created_at');
+    const tasks = (await pool.query<Task>('SELECT * FROM \"Tasks\" WHERE completed = false ORDER BY created_at DESC')).rows
     return response.status(200).json(tasks);
   }
 }
