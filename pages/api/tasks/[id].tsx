@@ -27,7 +27,7 @@ export default async function handler(request, response) {
     // await Task.findByIdAndUpdate(id, {
     //   $set: { title: request.body },
     // });
-    await pool.query("UPDATE \"Tasks\" SET title = $1 WHERE id = $2", [request.body, id] )
+    await pool.query("UPDATE \"Tasks\" SET title = $1 WHERE id = $2", [request.body.title, id] )
 
     response.status(200).json({
       status: `Task ${id} was successfully edited!`,
