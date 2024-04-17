@@ -70,7 +70,7 @@ const TaskList: FC<TaskListProps> = ({ tasks }) => {
             return [];
           }
           return data.map((task: Task) => {
-            if (task._id === taskId) {
+            if (task.id === taskId) {
               return { ...task, title: nextValue };
             }
             return task;
