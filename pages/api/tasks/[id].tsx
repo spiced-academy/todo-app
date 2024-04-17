@@ -26,7 +26,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
     }
 
     await Task.findByIdAndUpdate(id, {
-      $set: { title: request.body },
+      $set: { title: request.body.title },
     });
 
     response.status(200).json({
