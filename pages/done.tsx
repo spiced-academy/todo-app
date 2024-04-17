@@ -1,4 +1,5 @@
 "use client";
+
 import React, { FC } from "react";
 import Layout from "@/components/Layout/Layout";
 import MainContainer from "@/components/Navigation/MainContainer";
@@ -50,7 +51,7 @@ const DonePage: FC = () => {
   return (
     <Layout title="TaskTango - Done">
       <MainContainer mainTitle="Done">
-        <TaskList tasks={doneTasks.countingTasks} />
+        <TaskList tasks={doneTasks} />
       </MainContainer>
     </Layout>
   );
