@@ -1,19 +1,17 @@
 "use client"
 import { FormEvent } from 'react';
-import { useSWRConfig } from 'swr';
+
 
 import { AddIcon } from '@chakra-ui/icons';
 import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 
-import AddTask from './Functions/addTask';
 
 interface AddTaskInputProps {
   afterSubmit?: () => void;
+  createTask: (title: string) => Promise<Task>
 }
 
-export default function AddTaskInput({ afterSubmit }: AddTaskInputProps) {
-  const { mutate } = useSWRConfig();
-
+export default function AddTaskInput({ afterSubmit, createTask }: AddTaskInputProps) {
   const handleSubmit = async (event: FormEvent) => {
 
     event.preventDefault();
@@ -23,8 +21,7 @@ export default function AddTaskInput({ afterSubmit }: AddTaskInputProps) {
 
     try {
       const title = taskTitle.title as string;
-      await AddTask(title);
-      mutate("/api/tasks");
+      await createTask(title);
 
       const inputElement = form.elements.namedItem('title') as HTMLInputElement;
 
@@ -38,8 +35,6 @@ export default function AddTaskInput({ afterSubmit }: AddTaskInputProps) {
       }
     } catch (error) {
       console.error("Error adding task:", error);
-    } finally {
-      mutate("/api/tasks");
     }
   };
   return (

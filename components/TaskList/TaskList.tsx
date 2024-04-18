@@ -16,22 +16,19 @@ import {
   EditablePreview,
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
-import { deleteTask } from "../Task/Functions/deleteTask";
-import { editTask } from "../Task/Functions/editTask";
-import { completedTask } from "../Task/Functions/completedTask";
-import { useSWRConfig } from "swr";
 import { useTaskStore } from "@/store";
 import JSConfetti from "js-confetti";
 
 interface TaskListProps {
   tasks: ITask[];
+  completeTask: (taskId: string) => Promise<Task>
+  deleteTask: (taskId: string) => Promise<void>
+  updateTask: (taskId: string, title: string) => Promise<Task>
 }
 
-const TaskList: FC<TaskListProps> = ({ tasks }) => {
+const TaskList: FC<TaskListProps> = ({ tasks, completeTask, deleteTask, updateTask }) => {
   const toast = useToast();
-  const { mutate } = useSWRConfig();
   const funMode = useTaskStore((state) => state.funMode);
-  const confetti = new JSConfetti();
   const searchTerm = useTaskStore((state) => state.searchTerm);
 
   const filteredTasks = tasks.filter((task) =>
@@ -41,7 +38,6 @@ const TaskList: FC<TaskListProps> = ({ tasks }) => {
   const handleDeleteTask = async (taskId: string) => {
     try {
       await deleteTask(taskId);
-      mutate("/api/tasks");
 
       toast({
         title: "Task deleted",
@@ -50,8 +46,7 @@ const TaskList: FC<TaskListProps> = ({ tasks }) => {
         isClosable: true,
       });
     } catch (error) {
-      mutate("/api/tasks");
-      const message = (error as Error).message; 
+      const message = (error as Error).message;
       toast({
         title: "Error deleting task",
         description: message,
@@ -62,36 +57,15 @@ const TaskList: FC<TaskListProps> = ({ tasks }) => {
     }
   };
   const handleEditTask = async (taskId: string, nextValue: string) => {
-    try {
-      mutate(
-        "/api/tasks",
-        // handle the case when data is undefined
-        (data: Task[] | undefined) => {
-          if (!data) {
-            return [];
-          }
-          return data.map((task: Task) => {
-            if (task.id === taskId) {
-              return { ...task, title: nextValue };
-            }
-            return task;
-          });
-        },
-        true
-      );
-      await editTask(taskId, nextValue);
-    
-      mutate("/api/tasks");
-    } catch (error) {
-      mutate("/api/tasks");
-    }
+      await updateTask(taskId, nextValue);
   };
 
   const handleCompletedTask = async (taskId: string) => {
     try {
-      const task = await completedTask(taskId) as Task;
+      const task = await completeTask(taskId);
       if (task.completed) {
         if (funMode) {
+          const confetti = new JSConfetti();
           confetti.addConfetti({
             emojis: ["🌈", "🐻", "✏️", "✅", "🥳", "🎉", "🦄", "🐻", "🐼"],
             emojiSize: 150,
@@ -114,9 +88,7 @@ const TaskList: FC<TaskListProps> = ({ tasks }) => {
         duration: 5000,
         isClosable: true,
       });
-    } finally {
-      mutate("/api/tasks");
-    }
+    } 
   };
 
   return (
@@ -133,7 +105,7 @@ const TaskList: FC<TaskListProps> = ({ tasks }) => {
               ></Checkbox>
 
               <Editable
-                
+
                 defaultValue={task.title}
                 onSubmit={(nextValue) => handleEditTask(task.id, nextValue)}
               >
