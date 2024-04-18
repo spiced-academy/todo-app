@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Tasks {
+model Task {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title      String   @db.VarChar
   completed  Boolean? @default(false)
