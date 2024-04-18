@@ -14,24 +14,24 @@ import {
   Spacer,
   Text,
 } from "@chakra-ui/react";
-import { useTaskStore } from "@/store";
+import Link from "next/link";
+// import { useTaskStore } from "@/store";
 
-const ListsSection: React.FC = () => {
-  const activeList = useTaskStore((state) => state.activeList);
-  const countingTasks = useTaskStore((state) => state.countingTasks);
+interface ListSectionProps {
+  activeList: string;
+  totalNumberOfTasks: number;
+  numberOfUpcomingTasks: number;
+  numberOfDoneTasks: number;
+}
 
-  const numberOfDoneTasks = countingTasks.filter(
-    (task) => task.completed
-  ).length;
-  const numberOfUpcomingTasks = countingTasks.length - numberOfDoneTasks;
-
+const ListsSection: React.FC<ListSectionProps> = ({ activeList = "", totalNumberOfTasks = 0, numberOfUpcomingTasks = 0, numberOfDoneTasks = 0 }) => {
   return (
     <>
       <Heading display={["none", "unset"]} paddingTop="3" size="sm" mb={3}>
         Lists
       </Heading>
       <Box fontSize="sm" width={["250px", "100%"]}
-      alignSelf="center">
+        alignSelf="center">
         <nav>
           <List
             width={["100%", "inherit"]}
@@ -46,72 +46,78 @@ const ListsSection: React.FC = () => {
               borderRadius="full"
               bg={activeList === "TaskTango - Home Page" ? "teal.400" : ""}
             >
-              <Box as="a" href="/" display="flex" alignItems="center">
-                <ListIcon
-                  as={HamburgerIcon}
-                  marginRight={["0px", "8px"]}
-                  boxSize={["2em", "1em"]}
-                />
-                <Text display={["none", "unset"]}>All Tasks</Text>
-                <Spacer />
-                <Badge
-                  display={["none", "unset"]}
-                  ml="2"
-                  borderRadius="full"
-                  px="2"
-                  colorScheme="gray"
-                >
-                  {countingTasks.length}
-                </Badge>
-              </Box>
+              <Link href="/">
+                <Box display="flex" alignItems="center">
+                  <ListIcon
+                    as={HamburgerIcon}
+                    marginRight={["0px", "8px"]}
+                    boxSize={["2em", "1em"]}
+                  />
+                  <Text display={["none", "unset"]}>All Tasks</Text>
+                  <Spacer />
+                  <Badge
+                    display={["none", "unset"]}
+                    ml="2"
+                    borderRadius="full"
+                    px="2"
+                    colorScheme="gray"
+                  >
+                    {totalNumberOfTasks}
+                  </Badge>
+                </Box>
+              </Link>
             </ListItem>
             <ListItem
               p="1"
               borderRadius="full"
               bg={activeList === "TaskTango - Upcoming" ? "teal.400" : ""}
             >
-              <Box as="a" href="/upcoming" alignItems="center" display="flex">
-                <ListIcon
-                  as={RepeatClockIcon}
-                  marginRight={["0px", "8px"]}
-                  boxSize={["2em", "1em"]}
-                />
-                <Text display={["none", "unset"]}>Upcoming</Text>
-                <Spacer />
-                <Badge
-                  display={["none", "unset"]}
-                  ml="2"
-                  borderRadius="full"
-                  px="2"
-                  colorScheme="gray"
-                >
-                  {numberOfUpcomingTasks}
-                </Badge>
-              </Box>
+              <Link href="/upcoming">
+                <Box alignItems="center" display="flex">
+                  <ListIcon
+                    as={RepeatClockIcon}
+                    marginRight={["0px", "8px"]}
+                    boxSize={["2em", "1em"]}
+                  />
+                  <Text display={["none", "unset"]}>Upcoming</Text>
+                  <Spacer />
+                  <Badge
+                    display={["none", "unset"]}
+                    ml="2"
+                    borderRadius="full"
+                    px="2"
+                    colorScheme="gray"
+                  >
+                    {numberOfUpcomingTasks}
+                  </Badge>
+                </Box>
+              </Link>
             </ListItem>
             <ListItem
               p="1"
               borderRadius="full"
               bg={activeList === "TaskTango - Done" ? "teal.400" : ""}
             >
-              <Box as="a" href="/done" alignItems="center" display="flex">
-                <ListIcon
-                  as={CheckCircleIcon}
-                  marginRight={["0px", "8px"]}
-                  boxSize={["2em", "1em"]}
-                />
-                <Text display={["none", "unset"]}>Done</Text>
-                <Spacer />
-                <Badge
-                  display={["none", "unset"]}
-                  ml="2"
-                  borderRadius="full"
-                  px="2"
-                  colorScheme="gray"
-                >
-                  {numberOfDoneTasks}
-                </Badge>
-              </Box>
+              <Link href="/done">
+                <Box alignItems="center" display="flex">
+                  <ListIcon
+                    as={CheckCircleIcon}
+                    marginRight={["0px", "8px"]}
+                    boxSize={["2em", "1em"]}
+                  />
+                  <Text display={["none", "unset"]}>Done</Text>
+                  <Spacer />
+                  <Badge
+                    display={["none", "unset"]}
+                    ml="2"
+                    borderRadius="full"
+                    px="2"
+                    colorScheme="gray"
+                  >
+                    {numberOfDoneTasks}
+                  </Badge>
+                </Box>
+              </Link>
             </ListItem>
             {/* <ListItem display={["none", "unset"]} p="1">
               <Box as="a" href="/stickywall" alignItems="center" display="flex">

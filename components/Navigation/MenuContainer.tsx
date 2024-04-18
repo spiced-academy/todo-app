@@ -10,9 +10,30 @@ import Search from "./Searchbar";
 import ListsSection from "./ListsSection";
 import DarkMode from "./DarkMode";
 import FunMode from "./FunMode";
+import { usePathname } from "next/navigation";
 
-const MenuContainer: React.FC = () => {
+interface MenuContainerProps {
+  totalNumberOfTasks: number
+  numberOfDoneTasks: number
+  numberOfUpcomingTasks: number
+}
+
+const MenuContainer: React.FC<MenuContainerProps> = ({totalNumberOfTasks, numberOfDoneTasks, numberOfUpcomingTasks}) => {
   const bg = useColorModeValue("gray.200", "gray.700");
+  const pathname = usePathname()
+
+  let activeList = "TaskTango - Home Page"
+
+  switch (pathname) {
+    case "/done":
+      activeList = "TaskTango - Done"
+      break;
+
+    case "/upcoming":
+      activeList = "TaskTango - Upcoming"
+      break;
+  }
+  
 
   return (
     <Box
@@ -36,7 +57,7 @@ const MenuContainer: React.FC = () => {
 
           <Search />
         </Box>
-        <ListsSection />
+        <ListsSection activeList={activeList} totalNumberOfTasks={totalNumberOfTasks} numberOfDoneTasks={numberOfDoneTasks} numberOfUpcomingTasks={numberOfUpcomingTasks}/>
         <Spacer />
 
         <Box display={["none", "unset"]}>
