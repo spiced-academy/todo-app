@@ -20,7 +20,6 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   const id = params.id;
-  // const task = await Task.findById(id);
   const task = (await pool.query('SELECT * FROM "Tasks" WHERE id = $1', [id]))
     .rows[0];
   if (!task) {
