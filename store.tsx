@@ -2,14 +2,14 @@
 import { StoreApi, create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-type Task = {
+interface Task {
   completed: boolean;
   title: string;
 };
 
-type State = {
+interface State {
   funMode: boolean;
-  setupMode: boolean;
+  setupMode: boolean | undefined;
   finishSetup: () => void;
   activeList: string | null;
   setActiveList: (newActiveList: string) => void;
@@ -28,7 +28,7 @@ type ZustandSet = (partial: Partial<State> | ((state: State) => Partial<State>))
 
 export const useTaskStore = create<State>()(
   persist(
-    (set: ZustandSet, get: GetState<State>, api: StoreApi<State>) => ({
+    (set: ZustandSet, get: StoreApi<State>["getState"]) => ({
       funMode: false,
       setupMode: true,
       finishSetup: () => set({ setupMode: false }),
