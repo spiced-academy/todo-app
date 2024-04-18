@@ -10,8 +10,12 @@ const tasks: Task[] = [
 jest.mock("../Task/functions/completedTask");
 
 describe("view a list of tasks", () => {
+  const completeTask = jest.fn()
+  const deleteTask = jest.fn()
+  const updateTask = jest.fn()
+
   it("render the tasklist", () => {
-    render(<TaskList tasks={tasks} />);
+    render(<TaskList tasks={tasks} completeTask={completeTask} deleteTask={deleteTask} updateTask={updateTask}/>);
 
     expect(screen.getByText("Task 1")).toBeInTheDocument();
 
@@ -21,7 +25,7 @@ describe("view a list of tasks", () => {
   });
 
   it("handles completed task correctly", async () => {
-    render(<TaskList tasks={tasks} />);
+    render(<TaskList tasks={tasks} completeTask={completeTask} deleteTask={deleteTask} updateTask={updateTask}/>);
 
     // Trigger the completion of a task and check if the completed task is updated in the UI
     const items: HTMLElement[] = screen.getAllByRole("checkbox");
@@ -31,7 +35,7 @@ describe("view a list of tasks", () => {
   });
 
   it("handles delete task correctly", async () => {
-    render(<TaskList tasks={tasks} />);
+    render(<TaskList tasks={tasks} completeTask={completeTask} deleteTask={deleteTask} updateTask={updateTask}/>);
     const listItems: HTMLElement[] = screen.getAllByRole("listitem");
     await expect(listItems.length).toBe(3);
 
