@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache";
-import { pool } from "@/db/pg_pool";
+import prisma from "@/db/client";
+import { Task } from "@prisma/client";
 
 export const _revalidatePaths = () => {
     revalidatePath("/[[..taskState]]", "layout")
@@ -7,15 +8,22 @@ export const _revalidatePaths = () => {
 
 export const createTask = async (title: string): Promise<Task> => {
     "use server";
-    const result = await pool.query("INSERT INTO \"Tasks\" (title) VALUES ($1) RETURNING *", [title]);
+    const result = await prisma.task.create({
+        data: {
+            title
+        }
+    })
     _revalidatePaths()
-    return result.rows[0] as Task
+    return result
 }
 
 export const getTasks = async () => {
     "use server";
-    const result = await pool.query<Task>("SELECT * FROM \"Tasks\" ORDER BY created_at DESC");
-    return result.rows;
+    return prisma.task.findMany({
+        orderBy: {
+            created_at: "desc"
+        }
+    })
 }
 
 export const getTasksByState = async (taskState: TaskState | undefined): Promise<Task[]> => {
@@ -32,52 +40,82 @@ export const getTasksByState = async (taskState: TaskState | undefined): Promise
 
 export const getUpcomingTasks = async () => {
     "use server";
-    const result = await pool.query<Task>("SELECT * FROM \"Tasks\" WHERE completed = FALSE ORDER BY created_at DESC");
-    return result.rows;
+    return prisma.task.findMany({
+        where: {
+            completed: false
+        },
+        orderBy: {
+            created_at: "desc"
+        }
+    })
 }
 
 export const getDoneTasks = async () => {
     "use server";
-    const result = await pool.query<Task>("SELECT * FROM \"Tasks\" WHERE completed = TRUE ORDER BY created_at DESC");
-    return result.rows;
+    return prisma.task.findMany({
+        where: {
+            completed: true
+        },
+        orderBy: {
+            created_at: "desc"
+        }
+    })
 }
 
 export const completeTask = async (taskId: string): Promise<Task> => {
     "use server";
-    const task = (await pool.query('SELECT * FROM "Tasks" WHERE id = $1', [taskId]))
-        .rows[0];
+    const task = await prisma.task.findUnique({
+        where: {
+            id: taskId
+        }
+    })
+
     if (!task) {
         throw new Error("Task not found!")
     }
-
-    const result = await pool.query('UPDATE "Tasks" SET completed = $1 WHERE id = $2 RETURNING *', [
-        !task.completed,
-        taskId,
-    ]);
+    const updatedTask =  prisma.task.update({
+        where: {
+            id: taskId
+        },
+        data: {
+            completed: !task.completed
+        }
+    })
     _revalidatePaths()
-
-    return result.rows[0] as Task;
+    return updatedTask
 }
 
 export const deleteTask = async (taskId: string): Promise<void> => {
     "use server"
-    await pool.query('DELETE FROM "Tasks" WHERE id = $1', [taskId])
+    await prisma.task.delete({
+        where: {
+            id: taskId
+        }
+    })
     _revalidatePaths()
 }
 
 export const updateTask = async (taskId: string, title: string): Promise<Task> => {
     "use server"
-    const result = await pool.query('UPDATE "Tasks" SET title = $1 WHERE id = $2 RETURNING *', [
-        title,
-        taskId]);
+    const updatedTask = await prisma.task.update({
+        where: {
+            id: taskId
+        },
+        data: {
+            title
+        }
+    })
     _revalidatePaths()
-    return result.rows[0]
+    return updatedTask
 }
+
 export const getNumberOfTasksByState = async (state?: TaskState | undefined): Promise<number> => {
     "use server"
-    const result = !state ? await pool.query('SELECT COUNT(*) FROM "Tasks"') : await pool.query('SELECT COUNT(*) FROM "Tasks" WHERE completed = $1', [state === "done"])
-
-    return result.rows[0].count
+    return await prisma.task.count(!state ? undefined : {
+        where: {
+            completed: state === "done"
+        }
+    })
 }
 
 
