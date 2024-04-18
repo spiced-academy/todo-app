@@ -15,12 +15,22 @@ import {
 } from "@chakra-ui/react";
 import { useTaskStore } from "@/store";
 import AddTaskInput from "../Task/AddTaskInput";
+import { useEffect, useState } from "react";
 
-const SetupModal: React.FC = () => {
+interface SetupModalProps {
+  createTask: (title: string) => Promise<Task>
+}
+
+const SetupModal: React.FC<SetupModalProps> = ({ createTask }) => {
+  const [mounted, setMounted] = useState<boolean>(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
   const setupMode = useTaskStore((state) => state.setupMode);
   const finishSetup = useTaskStore((state) => state.finishSetup);
 
-  const { isOpen, onClose } = useDisclosure({ defaultIsOpen: setupMode });
+  const { isOpen, onClose } = useDisclosure({ defaultIsOpen: true, isOpen: mounted && setupMode });
   const closeWelcomeScreenAndFinishSetup = () => {
     onClose();
     finishSetup();
@@ -44,6 +54,7 @@ const SetupModal: React.FC = () => {
               </Text>
               <AddTaskInput
                 afterSubmit={() => closeWelcomeScreenAndFinishSetup()}
+                createTask={createTask}
               />
             </Stack>
           </ModalBody>
