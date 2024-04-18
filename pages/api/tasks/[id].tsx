@@ -15,7 +15,6 @@ export default async function handler(request: NextApiRequest, response: NextApi
   }
 
   if (request.method === "PUT") {
-    // const task = await Task.findById(id);
     const task = (await pool.query<Task>("SELECT * FROM \"Tasks\" WHERE id = $1", [id])).rows[0]
 
     if (!task) {
@@ -23,9 +22,6 @@ export default async function handler(request: NextApiRequest, response: NextApi
       return;
     }
 
-    // await Task.findByIdAndUpdate(id, {
-    //   $set: { title: request.body },
-    // });
     await pool.query<Task>("UPDATE \"Tasks\" SET title = $1 WHERE id = $2", [request.body.title, id])
 
     response.status(200).json({
