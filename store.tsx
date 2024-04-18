@@ -1,4 +1,5 @@
-import { SetState, GetState, StoreApi, create } from "zustand";
+"use client"
+import { StoreApi, create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
 type Task = {
