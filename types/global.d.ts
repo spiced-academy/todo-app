@@ -1,7 +1,6 @@
 export { }
 
 declare global {
-
     interface ITask {
         id: string;
         title: string;
@@ -27,5 +26,7 @@ declare global {
         setCountCompletedTasks: () => void;
         setActiveTasks: () => void;
     };
+
+    type TaskState = "upcoming" | "done" 
 
 }
