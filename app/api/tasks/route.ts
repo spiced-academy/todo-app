@@ -12,7 +12,6 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const task = await request.json();
-    console.log(task);
     const { title: taskTitle } = task;
     const result = await pool.query<Task>('INSERT INTO "Tasks" (title) VALUES ($1) RETURNING *', [
       taskTitle,
