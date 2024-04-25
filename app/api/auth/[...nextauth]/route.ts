@@ -2,6 +2,7 @@ import NextAuth, { Account, AuthOptions, Session, User } from 'next-auth';
 import { AdapterUser } from 'next-auth/adapters';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { authenticateUser } from '@/services/UserService';
 
 export const authOptions: AuthOptions = {
     pages: {
@@ -12,16 +13,16 @@ export const authOptions: AuthOptions = {
         CredentialsProvider({
             name: "Credentials",
             credentials: {
-                username: { label: "Username", type: "text" },
+                email: { label: "eMail", type: "text" },
                 password: { label: "Password", type: "password" },
             },
             authorize: async (credentials) => {
                 // Example user validation logic
-                if (credentials && credentials.username === "jsmith" && credentials.password === "password") {
-                    const user:User = { id: "1", name: "J Smith", email: "jsmith@example.com" } // This should be replaced with actual user validation logic
-                    return user
-                } else {
-                    return null
+                console.log("credentials", credentials)
+                try {
+                    return authenticateUser(credentials?.email || "", credentials?.password || "")
+                } catch (error) {
+                    throw new Error('Invalid email or password');
                 }
             },
         }),

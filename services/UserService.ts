@@ -1,24 +1,16 @@
 import prisma from "@/db/client";
 import bcrypt from 'bcrypt'; // Use bcrypt for hashing passwords
-import { randomBytes } from 'crypto';
 import { User } from "@prisma/client";
 import { sendRegistrationMail } from "./MailService";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-
-/**
- * Creates a unique registration token for a new user.
- * @returns {string} A unique token for user registration.
- */
-const createToken = (): string => {
-    return randomBytes(48).toString('hex');
-};
+import { createRegistrationToken } from "./TokenService";
 
 export const createUser = async (email: string, password: string, name = ""): Promise<User | null> => {
     "use server";
     const saltRounds = 10; // Define the number of salt rounds for hashing
     const salt = await bcrypt.genSalt(saltRounds);
     const passwordHash = await bcrypt.hash(password, salt); // Hash the password with bcrypt
-    const registrationToken = createToken();
+    const registrationToken = createRegistrationToken();
     let newUser: User | null = null;
     try {
       newUser = await prisma.user.create({
@@ -42,6 +34,25 @@ export const createUser = async (email: string, password: string, name = ""): Pr
 
     return newUser;
 };
+
+export const authenticateUser = async (email: string, password: string) => {
+    "use server";
+    console.log("authenticateUser");
+    
+    console.log("email", email);
+    const user = await prisma.user.findUnique({ where: { email } });
+    
+    if (!user) {
+        throw new Error('User not found');
+    }
+    const isPasswordCorrect = await bcrypt.compare(password, user.passwordHash)
+
+    console.log(isPasswordCorrect)
+    if (!isPasswordCorrect) {
+        throw new Error('Invalid password');
+    }
+    return user;
+}
 
 export const confirmRegistration = async (email: string, token: string) => {
     "use server";
