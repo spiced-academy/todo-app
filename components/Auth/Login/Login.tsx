@@ -27,7 +27,7 @@ export default function LoginComponent() {
         isClosable: true,
       });
     } else {
-        router.push('/');
+      router.push('/');
     }
   };
 
@@ -52,6 +52,7 @@ export default function LoginComponent() {
             onChange={(e) => setPassword(e.target.value)}
           />
           <Link color="teal.500" href="/forgot-password" mt={2} display="block">Forgot your password?</Link>
+          <Link color="teal.500" href="/register" mt={2} display="block">Don&apos;t have an account? Register</Link>
         </FormControl>
         <Button width="full" mt={4} type="submit">
           Sign In
