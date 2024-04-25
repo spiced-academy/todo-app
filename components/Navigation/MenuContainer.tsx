@@ -25,11 +25,11 @@ const MenuContainer: React.FC<MenuContainerProps> = ({totalNumberOfTasks, number
   let activeList = "TaskTango - Home Page"
 
   switch (pathname) {
-    case "/filter/done":
+    case "/tasks/done":
       activeList = "TaskTango - Done"
       break;
 
-    case "/filter/upcoming":
+    case "/tasks/upcoming":
       activeList = "TaskTango - Upcoming"
       break;
   }
