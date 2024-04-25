@@ -72,7 +72,7 @@ const ListsSection: React.FC<ListSectionProps> = ({ activeList = "", totalNumber
               borderRadius="full"
               bg={activeList === "TaskTango - Upcoming" ? "teal.400" : ""}
             >
-              <Link href="/filter/upcoming">
+              <Link href="/tasks/upcoming">
                 <Box alignItems="center" display="flex">
                   <ListIcon
                     as={RepeatClockIcon}
@@ -98,7 +98,7 @@ const ListsSection: React.FC<ListSectionProps> = ({ activeList = "", totalNumber
               borderRadius="full"
               bg={activeList === "TaskTango - Done" ? "teal.400" : ""}
             >
-              <Link href="/filter/done">
+              <Link href="/tasks/done">
                 <Box alignItems="center" display="flex">
                   <ListIcon
                     as={CheckCircleIcon}
