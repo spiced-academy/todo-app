@@ -1,6 +1,21 @@
 import nodemailer from 'nodemailer';
 
 /**
+ * Creates and returns a nodemailer transporter instance.
+ */
+const getTransporter = () => {
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST || "localhost",
+    port: process.env.SMTP_PORT ? +process.env.SMTP_PORT : 1025,
+    secure: false, // upgrade later with STARTTLS
+    auth: {
+      user: process.env.SMTP_USER || "username",
+      pass: process.env.SMTP_PASS || "password",
+    },
+  });
+};
+
+/**
  * Sends a registration confirmation email to the newly registered user.
  * @param {string} email - The email address of the user.
  * @param {string} name - The name of the user.
@@ -8,15 +23,7 @@ import nodemailer from 'nodemailer';
 export const sendRegistrationMail = async (email: string, name: string, registrationToken: string): Promise<void> => {
   "use server";
   // Transporter configuration for nodemailer using SMTP
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || "localhost",
-    port: process.env.SMTP_PORT ? +process.env.SMTP_PORT : 1025,
-    secure: false, // upgrade later with STARTTLS
-    auth: {
-      user: "username",
-      pass: "password",
-    },
-  });
+  const transporter = getTransporter();
   
   // Generate the confirmation link (placeholder link for demonstration)
   const confirmationLink = `${process.env.BASE_PATH}/registration-confirm?email=${encodeURIComponent(email)}&token=${encodeURIComponent(registrationToken)}`;
