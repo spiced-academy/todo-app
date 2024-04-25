@@ -41,6 +41,7 @@ export default function LoginComponent() {
             type="email"
             placeholder="Enter your email"
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete='email'
           />
         </FormControl>
         <FormControl mt={4}>
