@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, FormControl, FormLabel, Input, useToast, Heading } from '@chakra-ui/react'; // Added Heading import
+import { Box, Button, FormControl, FormLabel, Input, useToast, Heading, Link } from '@chakra-ui/react'; // Added Link import
 import { User } from '@prisma/client';
 import { useState } from 'react';
 
@@ -81,6 +81,9 @@ const RegisterComponent = ({ createUser }: RegistrationComponentProps) => {
         <Button width="full" mt={4} type="submit">
           Register
         </Button>
+        <Box textAlign="center" mt={4}>
+          <Link href="/login" color="teal.500">Already have an account? Login</Link> {/* Added login link */}
+        </Box>
       </form>
     </Box>
   );
