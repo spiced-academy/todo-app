@@ -1,0 +1,33 @@
+# Use an official Node base image with a tag that includes development tools
+FROM node:21-bookworm
+
+# Set the working directory
+WORKDIR /app
+
+# Do NOT copy local code to the container in DEV environment!
+# instead use volumes to mount the local code to the container
+# VOLUME /app
+
+# Install dependencies
+# Assume you have nodemon for hot reloading
+
+# Install pango and cairo
+RUN apt-get update && apt-get install -y libpango1.0-dev libcairo2-dev
+
+# Copy package.json to the container
+COPY package.json ./
+
+# Update npm to 10.6.0
+RUN npm install -g npm@10.6.0
+
+# Install canvas from source
+RUN npm install --build-from-source canvas
+
+# Install all the rest of the dependencies
+RUN npm install 
+
+# Expose port for local development
+EXPOSE 3000
+
+# Start command with nodemon for hot reloading
+CMD ["npm", "run", "dev"]
