@@ -2,7 +2,7 @@ import '@/styles/global.css';
 
 import { getServerSession } from 'next-auth';
 
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/nextauth/authOptions';
 import Header from '@/components/Header/Header';
 import MenuContainer from '@/components/Navigation/MenuContainer';
 import { getNumberOfTasksByState } from '@/services/TaskService';
