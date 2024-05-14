@@ -1,0 +1,28 @@
+services:
+  nextjs:
+    container_name: nextjs-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:3000"
+    environment:
+      - DATABASE_URL=postgres://postgres:password@postgres:5432/postgres
+      - NODE_ENV=production
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgres-db
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=todo-app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
