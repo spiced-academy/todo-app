@@ -37,10 +37,7 @@ export const createUser = async (email: string, password: string, name = ""): Pr
 
 export const authenticateUser = async (email: string, password: string) => {
     "use server";
-    console.log("authenticateUser");
-    
-    console.log("email", email);
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { email, emailVerified: { not: null } } });
     
     if (!user) {
         throw new Error('User not found');
