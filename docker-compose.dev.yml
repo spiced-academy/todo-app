@@ -12,6 +12,8 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/todo-app
       - NODE_ENV=development
+      - SMTP_HOST=mailhog
+      - SMTP_PORT=1025
     depends_on:
       - postgres
 
