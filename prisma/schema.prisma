@@ -16,14 +16,15 @@ model Task {
 }
 
 model User {
-  id                String    @id @default(cuid())
-  name              String?
-  email             String    @unique
-  emailVerified     DateTime?
-  passwordHash      String
-  registrationToken String?
-  salt              String
-  image             String?
+  id                 String    @id @default(cuid())
+  name               String?
+  email              String    @unique
+  emailVerified      DateTime?
+  passwordHash       String
+  registrationToken  String?
+  resetPasswordToken String?
+  salt               String
+  image              String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
