@@ -10,7 +10,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=postgres://postgres:password@postgres:5432/postgres
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/todo-app
       - NODE_ENV=development
     depends_on:
       - postgres
