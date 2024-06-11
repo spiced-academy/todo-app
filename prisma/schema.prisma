@@ -11,8 +11,11 @@ model Task {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title      String   @db.VarChar
   completed  Boolean? @default(false)
+  new        Boolean? @default(true)
   created_at DateTime @default(now()) @db.Timestamptz(6)
   updated_at DateTime @default(now()) @db.Timestamptz(6)
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id])
 }
 
 model User {
@@ -25,6 +28,7 @@ model User {
   resetPasswordToken String?
   salt               String
   image              String?
+  tasks              Task[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
