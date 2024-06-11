@@ -35,6 +35,21 @@ export const createUser = async (email: string, password: string, name = ""): Pr
     return newUser;
 };
 
+export const resetPassword = async (email: string, password: string, token: string) => {
+    "use server";
+    const user = await prisma.user.findUnique({ where: { email, emailVerified: { not: null }, resetPasswordToken: token } });
+    if (!user) {
+        throw new Error('User not found');
+    }
+    const saltRounds = 10; // Define the number of salt rounds for hashing
+    const salt = await bcrypt.genSalt(saltRounds);
+    const passwordHash = await bcrypt.hash(password, salt); // Hash the password with bcrypt
+    await prisma.user.update({
+        where: { email },
+        data: { passwordHash, salt },
+    });
+};
+
 export const authenticateUser = async (email: string, password: string) => {
     "use server";
     const user = await prisma.user.findUnique({ where: { email, emailVerified: { not: null } } });
