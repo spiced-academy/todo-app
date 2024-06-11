@@ -1,4 +1,6 @@
 import prisma from "@/db/client";
+import { sendPasswordResetEmail } from '@/services/MailService';
+import { createPasswordResetToken } from '@/services/TokenService';
 import bcrypt from 'bcrypt'; // Use bcrypt for hashing passwords
 import { User } from "@prisma/client";
 import { sendRegistrationMail } from "./MailService";
@@ -35,7 +37,17 @@ export const createUser = async (email: string, password: string, name = ""): Pr
     return newUser;
 };
 
-export const resetPassword = async (email: string, password: string, token: string) => {
+export const resetPassword = async (email: string) => {
+    "use server";
+    const token = createPasswordResetToken();
+    await prisma.user.update({
+      where: { email },
+      data: { resetPasswordToken: token },
+    });
+    await sendPasswordResetEmail(email, token);
+}
+
+export const updatePassword = async (email: string, password: string, token: string) => {
     "use server";
     const user = await prisma.user.findUnique({ where: { email, emailVerified: { not: null }, resetPasswordToken: token } });
     if (!user) {

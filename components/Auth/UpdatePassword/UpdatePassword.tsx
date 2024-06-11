@@ -1,11 +1,13 @@
 "use client"
 import { Box, useToast, Heading, FormControl, FormLabel, Input, Button } from "@chakra-ui/react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-export const ResetPasswordComponent = () => {
+export const UpdatePasswordComponent = ({ updatePassword, email, token }: { updatePassword: (email: string, password: string, token: string) => Promise<void>, email: string, token: string }) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const toast = useToast();
+    const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -30,6 +32,8 @@ export const ResetPasswordComponent = () => {
         return;
       }
 
+      updatePassword(email, password, token);
+
       // Here you would typically make an API request to your auth service for password reset
       // For demonstration, we'll just show a toast on successful submission
       toast({
@@ -37,6 +41,9 @@ export const ResetPasswordComponent = () => {
         description: "Your password has been reset successfully.",
         status: 'success',
         duration: 9000,
+        onCloseComplete: () => {
+          router.push('/login');
+        },
         isClosable: true,
       });
     };
@@ -45,6 +52,14 @@ export const ResetPasswordComponent = () => {
       <Box my={[4, 8]} textAlign="left" width={['90%', '80%', '70%', '60%', '50%']} mx="auto">
         <Heading as="h1" size="xl" mb={6}>Reset Password</Heading>
         <form onSubmit={handleSubmit}>
+          <FormControl isRequired style={{ display: 'none' }}>
+            <FormLabel>Reset Token</FormLabel>
+            <Input
+              type="hidden"
+              name="token"
+              value={token || ''}
+            />
+          </FormControl>
           <FormControl isRequired>
             <FormLabel>New Password</FormLabel>
             <Input
@@ -73,5 +88,5 @@ export const ResetPasswordComponent = () => {
     );
   };
 
-  export default ResetPasswordComponent;
+  export default UpdatePasswordComponent;
 
