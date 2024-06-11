@@ -42,7 +42,7 @@ const RegisterComponent = ({ createUser }: RegistrationComponentProps) => {
       await createUser(email, password, name);
       toast({
         title: 'Account created.',
-        description: "We've created your account for you.",
+        description: "Please check your email for a confirmation email.",
         status: 'success',
         duration: 9000,
         isClosable: true,
