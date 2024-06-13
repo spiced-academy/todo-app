@@ -1,32 +1,23 @@
 "use client"
 import { FC } from "react";
 import {
-  Checkbox,
-  ListItem,
-  UnorderedList,
-  IconButton,
-  Spacer,
-  HStack,
-  Input,
-  Divider,
-  Flex,
-  useToast,
-  Editable,
-  EditableInput,
-  EditablePreview,
+  UnorderedList, useToast
 } from "@chakra-ui/react";
-import { DeleteIcon } from "@chakra-ui/icons";
 import { useTaskStore } from "@/store";
 import JSConfetti from "js-confetti";
+import TaskItem from "@/components/TaskItem/TaskItem";
+import { User } from "@prisma/client";
 
 interface TaskListProps {
   tasks: ITask[];
+  users: User[];
   completeTask: (taskId: string) => Promise<Task>
   deleteTask: (taskId: string) => Promise<void>
   updateTask: (taskId: string, title: string) => Promise<Task>
+  assignTaskToUser: (taskId: string, userId: string) => Promise<Task>
 }
 
-const TaskList: FC<TaskListProps> = ({ tasks, completeTask, deleteTask, updateTask }) => {
+const TaskList: FC<TaskListProps> = ({ users = [], tasks, completeTask, updateTask, assignTaskToUser, deleteTask }) => {
   const toast = useToast();
   const funMode = useTaskStore((state) => state.funMode);
   const searchTerm = useTaskStore((state) => state.searchTerm);
@@ -34,6 +25,10 @@ const TaskList: FC<TaskListProps> = ({ tasks, completeTask, deleteTask, updateTa
   const filteredTasks = tasks.filter((task) =>
     task.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleAssignTask = async (taskId: string, userId: string) => {
+    await assignTaskToUser(taskId, userId );
+  };
 
   const handleDeleteTask = async (taskId: string) => {
     try {
@@ -56,6 +51,7 @@ const TaskList: FC<TaskListProps> = ({ tasks, completeTask, deleteTask, updateTa
       });
     }
   };
+
   const handleEditTask = async (taskId: string, nextValue: string) => {
       await updateTask(taskId, nextValue);
   };
@@ -94,45 +90,7 @@ const TaskList: FC<TaskListProps> = ({ tasks, completeTask, deleteTask, updateTa
   return (
     <UnorderedList styleType="none" spacing={2} marginTop={5}>
       {filteredTasks.map((task) => (
-        <ListItem key={task.id}>
-          <Flex alignItems="center">
-            <HStack spacing="12px">
-              <Checkbox
-                colorScheme="teal"
-                key={task.id}
-                isChecked={task.completed}
-                onChange={() => handleCompletedTask(task.id)}
-              ></Checkbox>
-
-              <Editable
-
-                defaultValue={task.title}
-                onSubmit={(nextValue) => handleEditTask(task.id, nextValue)}
-              >
-                {task.completed ? (
-                  <EditablePreview as="del" />
-                ) : (
-                  <EditablePreview />
-                )}
-                <Input
-                  as={EditableInput}
-                  focusBorderColor="teal.400"
-                  size="sm"
-                />
-              </Editable>
-            </HStack>
-            <Spacer />
-            <IconButton
-              aria-label="Delete a task"
-              size="xs"
-              color="red.300"
-              margin="10px"
-              icon={<DeleteIcon />}
-              onClick={() => handleDeleteTask(task.id)}
-            />
-          </Flex>
-          <Divider />
-        </ListItem>
+        <TaskItem key={task.id} task={task} handleCompletedTask={handleCompletedTask} handleEditTask={handleEditTask} handleAssignTask={handleAssignTask} handleDeleteTask={handleDeleteTask} users={users} />
       ))}
     </UnorderedList>
   );
