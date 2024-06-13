@@ -1,16 +1,50 @@
 import { revalidatePath } from "next/cache";
 import prisma from "@/db/client";
 import { Task } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from '@/nextauth/authOptions';
+import { sendMessage } from "./SseService";
 
 export const _revalidatePaths = () => {
     revalidatePath("/[[..taskState]]", "layout")
 }
 
+export const getNewTasksByUserId = async (userId: string): Promise<Task[]> => {
+    return prisma.task.findMany({
+        where: {
+            user_id: userId,
+            new: true
+        }
+    })
+}
+
+export const assignTaskToUser = async (taskId: string, userId: string): Promise<Task> => {
+    "use server";
+    const result = await prisma.task.update({
+        where: {
+            id: taskId
+        },
+        data: {
+            user_id: userId,
+            new: true
+        }
+    })
+    sendMessage(userId, "new task")
+    _revalidatePaths()
+    return result
+}
+
 export const createTask = async (title: string): Promise<Task> => {
     "use server";
+    const session = await getServerSession(authOptions)
+    if (!session) {
+        throw new Error("You must be logged in to create a task!")
+    }
+    console.log("createTask - session", session);
     const result = await prisma.task.create({
         data: {
-            title
+            title,
+            user_id: session.user.id
         }
     })
     _revalidatePaths()
@@ -19,7 +53,11 @@ export const createTask = async (title: string): Promise<Task> => {
 
 export const getTasks = async () => {
     "use server";
+    const session = await getServerSession(authOptions)
     return prisma.task.findMany({
+        where: {
+            user_id: session?.user.id
+        },
         orderBy: {
             created_at: "desc"
         }
@@ -40,9 +78,11 @@ export const getTasksByState = async (taskState: TaskState | undefined): Promise
 
 export const getUpcomingTasks = async () => {
     "use server";
+    const session = await getServerSession(authOptions)
     return prisma.task.findMany({
         where: {
-            completed: false
+            completed: false,
+            user_id: session?.user.id
         },
         orderBy: {
             created_at: "desc"
@@ -52,9 +92,11 @@ export const getUpcomingTasks = async () => {
 
 export const getDoneTasks = async () => {
     "use server";
+    const session = await getServerSession(authOptions)
     return prisma.task.findMany({
         where: {
-            completed: true
+            completed: true,
+            user_id: session?.user.id
         },
         orderBy: {
             created_at: "desc"
@@ -111,9 +153,12 @@ export const updateTask = async (taskId: string, title: string): Promise<Task> =
 
 export const getNumberOfTasksByState = async (state?: TaskState | undefined): Promise<number> => {
     "use server"
-    return await prisma.task.count(!state ? undefined : {
+    const session = await getServerSession(authOptions)
+    return await prisma.task.count(
+    {
         where: {
-            completed: state === "done"
+            completed: state === "done",
+            user_id: session?.user.id
         }
     })
 }
