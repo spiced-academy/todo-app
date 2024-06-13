@@ -1,15 +1,16 @@
 "use client"
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Avatar, Badge, Box, Button, Flex, Text } from '@chakra-ui/react';
 import { signIn, signOut } from 'next-auth/react';
 import type { Session } from 'next-auth';
+import { useRouter } from 'next/navigation';
 
 interface HeaderProps {
   session: Session | null;
 }
 
 const Header: React.FC<HeaderProps> = ({ session }) => {
-  const [unreadMessages, setUnreadMessages] = useState(0)
+  const router = useRouter()
 
   function onLogin() {
     signIn()
@@ -22,20 +23,20 @@ const Header: React.FC<HeaderProps> = ({ session }) => {
   const isLoggedIn = session?.user
 
   useEffect(() => {
-    const eventSource = new EventSource('/api/messages');
+    const eventSource = new EventSource('/api/sse');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     function sendEvent(event: MessageEvent) {
-      const unreadMessages = JSON.parse(event.data).unreadMessages
-      console.log(unreadMessages)
-      setUnreadMessages(unreadMessages)
+      router.refresh()
     }
 
     eventSource.addEventListener('message', sendEvent);
 
     return () => {
       eventSource.removeEventListener('message', sendEvent);
+      eventSource.close();
     };
 
-  }, [])
+  }, [router])
 
   return (
     <Flex as="nav" align="center" justify="space-between" wrap="wrap" padding="1.5rem" bg="teal.500" color="white">
@@ -53,7 +54,6 @@ const Header: React.FC<HeaderProps> = ({ session }) => {
               <Box position="relative">
                 <Avatar name={session?.user?.name || ""} src={session?.user?.image || ""} />
                 <Badge colorScheme="red" position="absolute" top="0" right="0" variant="solid" borderRadius="full">
-                  {unreadMessages > 0 ? unreadMessages : ''}
                 </Badge>
               </Box>
             </Box>
