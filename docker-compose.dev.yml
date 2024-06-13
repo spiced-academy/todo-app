@@ -10,7 +10,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/todo-app
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/todo-app?connection_limit=10
       - NODE_ENV=development
       - SMTP_HOST=mailhog
       - SMTP_PORT=1025
