@@ -7,6 +7,15 @@ import { sendRegistrationMail } from "./MailService";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { createRegistrationToken } from "./TokenService";
 
+export const getUsers = async (): Promise<User[]> => {
+    "use server";
+    return prisma.user.findMany(
+        { where: {
+            emailVerified: { not: null }
+        }}
+    );
+}
+
 export const createUser = async (email: string, password: string, name = ""): Promise<User | null> => {
     "use server";
     const saltRounds = 10; // Define the number of salt rounds for hashing
@@ -62,7 +71,7 @@ export const updatePassword = async (email: string, password: string, token: str
     });
 };
 
-export const authenticateUser = async (email: string, password: string) => {
+export const authenticateUser = async (email: string, password: string): Promise<User> => {
     "use server";
     const user = await prisma.user.findUnique({ where: { email, emailVerified: { not: null } } });
     
