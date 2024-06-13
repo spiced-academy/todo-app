@@ -3,19 +3,20 @@ import TaskList from "@/components/TaskList/TaskList";
 import AddTaskInput from "@/components/Task/AddTaskInput";
 import SetupModal from "@/components/Modal/Modal";
 import "./TasksContainer.module.css";
-import { completeTask, createTask, deleteTask, updateTask } from "@/services/TaskService";
+import { completeTask, createTask, deleteTask, updateTask, assignTaskToUser } from "@/services/TaskService";
+import { getUsers } from "@/services/UserService";
 
 interface TasksContainerComponentProps {
   tasks: Task[];
   mainTitle: string;
 }
 
-const TasksContainerComponent = ({ mainTitle, tasks }: TasksContainerComponentProps) => {
+const TasksContainerComponent = async ({ mainTitle, tasks }: TasksContainerComponentProps) => {
   return (
     <MainContainer mainTitle={mainTitle}>
       <SetupModal createTask={createTask}/>
       <AddTaskInput createTask={createTask} />
-      <TaskList tasks={tasks} completeTask={completeTask} deleteTask={deleteTask} updateTask={updateTask}/>
+      <TaskList users={await getUsers()} tasks={tasks} completeTask={completeTask} deleteTask={deleteTask} updateTask={updateTask} assignTaskToUser={assignTaskToUser}/>
     </MainContainer>
   );
 };

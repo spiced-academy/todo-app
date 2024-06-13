@@ -4,6 +4,7 @@ import { FormEvent } from 'react';
 
 import { AddIcon } from '@chakra-ui/icons';
 import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
+import { useSession } from 'next-auth/react';
 
 
 interface AddTaskInputProps {
@@ -12,6 +13,12 @@ interface AddTaskInputProps {
 }
 
 export default function AddTaskInput({ afterSubmit, createTask }: AddTaskInputProps) {
+  const { data: session } = useSession();
+
+  if (!session || !session.user?.id) {
+    return null;
+  }
+
   const handleSubmit = async (event: FormEvent) => {
 
     event.preventDefault();
