@@ -1,7 +1,8 @@
 import { authenticateUser } from '@/services/UserService';
-import { Account, AuthOptions, Session, User } from 'next-auth';
+import { AuthOptions, User } from 'next-auth';
 import { AdapterUser } from 'next-auth/adapters';
 import { JWT } from 'next-auth/jwt';
+import { Session } from 'next-auth/core/types';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 export const authOptions: AuthOptions = {
@@ -17,8 +18,6 @@ export const authOptions: AuthOptions = {
                 password: { label: "Password", type: "password" },
             },
             authorize: async (credentials) => {
-                // Example user validation logic
-                console.log("credentials", credentials)
                 try {
                     return authenticateUser(credentials?.email || "", credentials?.password || "")
                 } catch (error) {
@@ -28,16 +27,18 @@ export const authOptions: AuthOptions = {
         }),
     ],
     callbacks: {
-        async jwt({ token, account, user }: { token: JWT, account: Account | null, user: User|AdapterUser | null }) {
-            console.log("jwt", token, account, user);
-            
+        async jwt({ token }: { token: JWT, user: User|AdapterUser | null }) {
             return token
         },
-        async session({ session, token, user }: { session: Session, token: JWT, user: AdapterUser|User|null }) {
-            console.log("session", session, token, user);
-            if (!session.user) session.user = { name: '', email: '' };
-            session.user.name = token.name ?? '';
-            return session
+        async session({ session, token }: { session: Session, token: JWT }): Promise<Session> {
+            const modifiedSession = {
+                ...session,
+                user: {
+                    ...session.user,
+                    id: token.sub || "",
+                }
+            }
+            return modifiedSession
         },
     },
 }
