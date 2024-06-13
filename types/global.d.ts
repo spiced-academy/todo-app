@@ -4,7 +4,11 @@ declare global {
     interface ITask {
         id: string;
         title: string;
-        completed: boolean;
+        user_id: string | null;
+        new: boolean | null;
+        completed: boolean | null;
+        created_at: Date;
+        updated_at: Date;
     }
 
     type Task = ITask
