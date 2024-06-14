@@ -80,7 +80,6 @@ export const authenticateUser = async (email: string, password: string): Promise
     }
     const isPasswordCorrect = await bcrypt.compare(password, user.passwordHash)
 
-    console.log(isPasswordCorrect)
     if (!isPasswordCorrect) {
         throw new Error('Invalid password');
     }

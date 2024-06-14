@@ -40,7 +40,6 @@ export const createTask = async (title: string): Promise<Task> => {
     if (!session) {
         throw new Error("You must be logged in to create a task!")
     }
-    console.log("createTask - session", session);
     const result = await prisma.task.create({
         data: {
             title,

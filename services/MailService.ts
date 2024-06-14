@@ -42,7 +42,6 @@ export const sendRegistrationMail = async (email: string, name: string, registra
   // Send the email
   try {
     await transporter.sendMail(mailOptions);
-    console.log('Registration confirmation email sent successfully.');
   } catch (error) {
     console.error('Failed to send registration confirmation email:', error);
   }
@@ -68,7 +67,6 @@ export const sendPasswordResetEmail = async (email: string, passwordResetToken: 
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('Password reset email sent successfully.');
   } catch (error) {
     console.error('Failed to send password reset email:', error);
   }
