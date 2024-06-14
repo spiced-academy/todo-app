@@ -15,8 +15,9 @@ export const getNewTasksByUserId = async (userId: string): Promise<Task[]> => {
 
 export const assignTaskToUser = async (taskId: string, userId: string): Promise<Task> => {
     "use server";
-    const result = await prisma.task.update({
-        where: {
+    try {
+        const result = await prisma.task.update({
+            where: {
             id: taskId
         },
         data: {
@@ -25,8 +26,12 @@ export const assignTaskToUser = async (taskId: string, userId: string): Promise<
         }
     })
     const tasks = await getTasksByUserId(userId)
-    sendMessage(userId, {type: "tasks", data: tasks})
-    return result
+        sendMessage(userId, {type: "tasks", data: tasks})
+        return result
+    } catch (error) {
+        console.error(error)
+        throw new Error("Error assigning task to user!")
+    }
 }
 
 export const createTask = async (title: string): Promise<Task> => {

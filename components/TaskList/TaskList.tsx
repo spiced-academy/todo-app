@@ -35,8 +35,12 @@ const TaskList: FC<TaskListProps> = ({ users = [], completeTask, updateTask, ass
   );
 
   const handleAssignTask = async (taskId: string, userId: string) => {
-    await assignTaskToUser(taskId, userId );
-    assignTaskContext(taskId, userId);
+    try {
+      await assignTaskToUser(taskId, userId );
+      assignTaskContext(taskId, userId);
+    } catch (error) {
+      console.error(error)
+    }
   };
 
   const handleDeleteTask = async (taskId: string) => {
