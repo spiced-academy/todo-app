@@ -3,14 +3,18 @@ import React, { useEffect } from 'react';
 import { Avatar, Badge, Box, Button, Flex, Text } from '@chakra-ui/react';
 import { signIn, signOut } from 'next-auth/react';
 import type { Session } from 'next-auth';
-import { useRouter } from 'next/navigation';
+import { useTasks } from '@/contexts/TasksContext';
+import { receiveMessage } from '@/services/SseService';
 
 interface HeaderProps {
   session: Session | null;
 }
 
 const Header: React.FC<HeaderProps> = ({ session }) => {
-  const router = useRouter()
+  const context = useTasks();
+  if (!context) {
+    throw new Error('TasksContext is undefined');
+  }
 
   function onLogin() {
     signIn()
@@ -25,18 +29,14 @@ const Header: React.FC<HeaderProps> = ({ session }) => {
   useEffect(() => {
     const eventSource = new EventSource('/api/sse');
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    function sendEvent(event: MessageEvent) {
-      router.refresh()
-    }
-
-    eventSource.addEventListener('message', sendEvent);
+    eventSource.addEventListener('message', (event) => receiveMessage(event, context));
 
     return () => {
-      eventSource.removeEventListener('message', sendEvent);
+      eventSource.removeEventListener('message', (event) => receiveMessage(event, context));
       eventSource.close();
     };
 
-  }, [router])
+  }, [context])
 
   return (
     <Flex as="nav" align="center" justify="space-between" wrap="wrap" padding="1.5rem" bg="teal.500" color="white">

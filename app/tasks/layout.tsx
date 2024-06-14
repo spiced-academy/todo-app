@@ -25,8 +25,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       flexDirection={{ base: "column-reverse", md: "row" }} // column layout on smaller screens
       gap={["0px", "8px"]}
     >
-      <MenuContainer totalNumberOfTasks={totalNumberOfTasks} numberOfDoneTasks={numberOfDoneTasks} numberOfUpcomingTasks={numberOfUpcomingTasks} />
-      {children}
+        <MenuContainer totalNumberOfTasks={totalNumberOfTasks} numberOfDoneTasks={numberOfDoneTasks} numberOfUpcomingTasks={numberOfUpcomingTasks} />
+        {children}
     </Box>
   </>
   );

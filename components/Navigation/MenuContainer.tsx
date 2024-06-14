@@ -11,6 +11,7 @@ import ListsSection from "./ListsSection";
 import DarkMode from "./DarkMode";
 import FunMode from "./FunMode";
 import { usePathname } from "next/navigation";
+import { useTasks } from "@/contexts/TasksContext";
 
 interface MenuContainerProps {
   totalNumberOfTasks: number
@@ -18,9 +19,21 @@ interface MenuContainerProps {
   numberOfUpcomingTasks: number
 }
 
-const MenuContainer: React.FC<MenuContainerProps> = ({totalNumberOfTasks, numberOfDoneTasks, numberOfUpcomingTasks}) => {
+const MenuContainer: React.FC<MenuContainerProps> = () => {
+  const context = useTasks();
+
+
   const bg = useColorModeValue("gray.200", "gray.700");
   const pathname = usePathname()
+
+  if (!context || !context.tasks) {
+    return null
+  }
+  const { tasks } = context;
+
+  const totalNumberOfTasks = tasks.length;
+  const numberOfDoneTasks = tasks.filter((task) => task.completed === true).length;
+  const numberOfUpcomingTasks = tasks.filter((task) => task.completed === false).length;
 
   let activeList = "TaskTango - Home Page"
 
@@ -33,7 +46,7 @@ const MenuContainer: React.FC<MenuContainerProps> = ({totalNumberOfTasks, number
       activeList = "TaskTango - Upcoming"
       break;
   }
-  
+
 
   return (
     <Box
@@ -57,7 +70,7 @@ const MenuContainer: React.FC<MenuContainerProps> = ({totalNumberOfTasks, number
 
           <Search />
         </Box>
-        <ListsSection activeList={activeList} totalNumberOfTasks={totalNumberOfTasks} numberOfDoneTasks={numberOfDoneTasks} numberOfUpcomingTasks={numberOfUpcomingTasks}/>
+        <ListsSection activeList={activeList} totalNumberOfTasks={totalNumberOfTasks} numberOfDoneTasks={numberOfDoneTasks} numberOfUpcomingTasks={numberOfUpcomingTasks} />
         <Spacer />
 
         <Box display={["none", "unset"]}>

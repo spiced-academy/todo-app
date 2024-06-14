@@ -5,7 +5,7 @@ import { FormEvent } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
 import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
-
+import { useTasks } from '@/contexts/TasksContext';
 
 interface AddTaskInputProps {
   afterSubmit?: () => void;
@@ -14,10 +14,18 @@ interface AddTaskInputProps {
 
 export default function AddTaskInput({ afterSubmit, createTask }: AddTaskInputProps) {
   const { data: session } = useSession();
+  const tasksContext = useTasks();
 
   if (!session || !session.user?.id) {
     return null;
   }
+
+  if (!tasksContext) {
+    console.error("Tasks context is not available");
+    return null;
+  }
+
+  const { addTask } = tasksContext;
 
   const handleSubmit = async (event: FormEvent) => {
 
@@ -28,11 +36,11 @@ export default function AddTaskInput({ afterSubmit, createTask }: AddTaskInputPr
 
     try {
       const title = taskTitle.title as string;
-      await createTask(title);
+      const newTask = await createTask(title);
+      addTask(newTask);
 
       const inputElement = form.elements.namedItem('title') as HTMLInputElement;
-
-      inputElement && inputElement.focus();
+      inputElement?.focus();
 
       form.reset();
 

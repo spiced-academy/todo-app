@@ -7,17 +7,16 @@ import { completeTask, createTask, deleteTask, updateTask, assignTaskToUser } fr
 import { getUsers } from "@/services/UserService";
 
 interface TasksContainerComponentProps {
-  tasks: Task[];
   mainTitle: string;
 }
 
-const TasksContainerComponent = async ({ mainTitle, tasks }: TasksContainerComponentProps) => {
+const TasksContainerComponent = async ({ mainTitle }: TasksContainerComponentProps) => {
   return (
-    <MainContainer mainTitle={mainTitle}>
-      <SetupModal createTask={createTask}/>
-      <AddTaskInput createTask={createTask} />
-      <TaskList users={await getUsers()} tasks={tasks} completeTask={completeTask} deleteTask={deleteTask} updateTask={updateTask} assignTaskToUser={assignTaskToUser}/>
-    </MainContainer>
+      <MainContainer mainTitle={mainTitle}>
+        <SetupModal createTask={createTask} />
+        <AddTaskInput createTask={createTask} />
+        <TaskList users={await getUsers()} completeTask={completeTask} deleteTask={deleteTask} updateTask={updateTask} assignTaskToUser={assignTaskToUser} />
+      </MainContainer>
   );
 };
 

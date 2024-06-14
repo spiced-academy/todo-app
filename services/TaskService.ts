@@ -1,13 +1,8 @@
-import { revalidatePath } from "next/cache";
 import prisma from "@/db/client";
 import { Task } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from '@/nextauth/authOptions';
 import { sendMessage } from "./SseService";
-
-export const _revalidatePaths = () => {
-    revalidatePath("/[[..taskState]]", "layout")
-}
 
 export const getNewTasksByUserId = async (userId: string): Promise<Task[]> => {
     return prisma.task.findMany({
@@ -29,8 +24,8 @@ export const assignTaskToUser = async (taskId: string, userId: string): Promise<
             new: true
         }
     })
-    sendMessage(userId, "new task")
-    _revalidatePaths()
+    const tasks = await getTasksByUserId(userId)
+    sendMessage(userId, {type: "tasks", data: tasks})
     return result
 }
 
@@ -46,7 +41,6 @@ export const createTask = async (title: string): Promise<Task> => {
             user_id: session.user.id
         }
     })
-    _revalidatePaths()
     return result
 }
 
@@ -59,6 +53,14 @@ export const getTasks = async () => {
         },
         orderBy: {
             created_at: "desc"
+        }
+    })
+}
+
+export const getTasksByUserId = async (userId: string): Promise<Task[]> => {
+    return prisma.task.findMany({
+        where: {
+            user_id: userId
         }
     })
 }
@@ -122,7 +124,6 @@ export const completeTask = async (taskId: string): Promise<Task> => {
             completed: !task.completed
         }
     })
-    _revalidatePaths()
     return updatedTask
 }
 
@@ -133,7 +134,6 @@ export const deleteTask = async (taskId: string): Promise<void> => {
             id: taskId
         }
     })
-    _revalidatePaths()
 }
 
 export const updateTask = async (taskId: string, title: string): Promise<Task> => {
@@ -146,7 +146,6 @@ export const updateTask = async (taskId: string, title: string): Promise<Task> =
             title
         }
     })
-    _revalidatePaths()
     return updatedTask
 }
 

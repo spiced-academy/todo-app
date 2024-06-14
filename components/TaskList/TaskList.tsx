@@ -7,9 +7,9 @@ import { useTaskStore } from "@/store";
 import JSConfetti from "js-confetti";
 import TaskItem from "@/components/TaskItem/TaskItem";
 import { User } from "@prisma/client";
+import { useTasks } from "@/contexts/TasksContext";
 
 interface TaskListProps {
-  tasks: ITask[];
   users: User[];
   completeTask: (taskId: string) => Promise<Task>
   deleteTask: (taskId: string) => Promise<void>
@@ -17,10 +17,18 @@ interface TaskListProps {
   assignTaskToUser: (taskId: string, userId: string) => Promise<Task>
 }
 
-const TaskList: FC<TaskListProps> = ({ users = [], tasks, completeTask, updateTask, assignTaskToUser, deleteTask }) => {
+const TaskList: FC<TaskListProps> = ({ users = [], completeTask, updateTask, assignTaskToUser, deleteTask }) => {
+  const context = useTasks();
   const toast = useToast();
   const funMode = useTaskStore((state) => state.funMode);
   const searchTerm = useTaskStore((state) => state.searchTerm);
+
+  if (!context || !context.tasks) {
+    return null
+    // throw new Error('TasksContext is not available');
+  }
+
+  const { tasks, assignTask: assignTaskContext, updateTask: updateTaskContext, deleteTask: deleteTaskContext, completeTask: completeTaskContext } = context;
 
   const filteredTasks = tasks.filter((task) =>
     task.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -28,11 +36,13 @@ const TaskList: FC<TaskListProps> = ({ users = [], tasks, completeTask, updateTa
 
   const handleAssignTask = async (taskId: string, userId: string) => {
     await assignTaskToUser(taskId, userId );
+    assignTaskContext(taskId, userId);
   };
 
   const handleDeleteTask = async (taskId: string) => {
     try {
       await deleteTask(taskId);
+      deleteTaskContext(taskId);
 
       toast({
         title: "Task deleted",
@@ -54,11 +64,13 @@ const TaskList: FC<TaskListProps> = ({ users = [], tasks, completeTask, updateTa
 
   const handleEditTask = async (taskId: string, nextValue: string) => {
       await updateTask(taskId, nextValue);
+      updateTaskContext(taskId, nextValue);
   };
 
   const handleCompletedTask = async (taskId: string) => {
     try {
       const task = await completeTask(taskId);
+      completeTaskContext(taskId);
       if (task.completed) {
         if (funMode) {
           const confetti = new JSConfetti();
