@@ -1,3 +1,5 @@
+import { TaskContextType } from "@/contexts/TasksContext";
+
 interface Client {
     id: string;
     send: (data: unknown) => void;
@@ -19,5 +21,16 @@ export function sendMessage(clientId: string, message: unknown) {
         client(message)
     }
 }
+
+export function receiveMessage(event: MessageEvent, context: TaskContextType) {
+    if (!context) {
+        return
+    }
+
+    const message = JSON.parse(event.data)
+    switch (message.type) {
+        case "tasks":
+            context.setTasks(message.data)
+            break
     }
 }
