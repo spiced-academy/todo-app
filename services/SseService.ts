@@ -1,9 +1,9 @@
 interface Client {
     id: string;
-    send: (data: string) => void;
+    send: (data: unknown) => void;
 }
 
-const clients: Record<string, (data: string) => void> = {}
+const clients: Record<string, (data: unknown) => void> = {}
 
 export function addClient(client: Client) {
     clients[client.id] = client.send
@@ -13,7 +13,7 @@ export function removeClient(id: string) {
     delete clients[id]
 }
 
-export function sendMessage(clientId: string, message: string) {
+export function sendMessage(clientId: string, message: unknown) {
     const client = clients[clientId]
     if (client) {
         client(message)
