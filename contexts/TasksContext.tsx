@@ -9,6 +9,7 @@ export interface TaskContextType {
   updateTask: (taskId: string, title: string) => void;
   deleteTask: (taskId: string) => void;
   setTasks: (tasks: Task[]) => void;
+  setPublicTasks: (tasks: Task[]) => void;
 };
 
 // Create context

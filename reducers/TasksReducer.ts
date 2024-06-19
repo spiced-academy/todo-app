@@ -5,17 +5,17 @@ import { UPDATE_TASK } from "@/actions/TaskActions/UpdateTaskAction";
 import { DELETE_TASK, DeleteTaskPayload } from "@/actions/TaskActions/DeleteTaskAction";
 import { COMPLETE_TASK, CompleteTaskPayload } from "@/actions/TaskActions/CompleteTaskAction";
 import { SET_TASKS, SetTasksPayload } from "@/actions/TaskActions/SetTasksAction";
+import { SET_PUBLIC_TASKS, SetPublicTasksPayload } from "@/actions/TaskActions/SetPublicTasksAction";
 
 // Define reducer
-export const taskReducer = (state: ITask[], action: TaskAction) => {
+export const taskReducer =  (state: ITask[], action: TaskAction) => {
 
   switch (action.type) {
     case ADD_TASK:
       return [(action.payload as Task), ...state];
     case ASSIGN_TASK:
       return state.map(task =>
-        task.id === (action.payload as AssignTaskPayload).id ? { ...task, user_id: (action.payload as AssignTaskPayload).userId } : task
-      ).filter(task => task.id !== (action.payload as AssignTaskPayload).id);
+        task.id === (action.payload as AssignTaskPayload).id ? { ...task, user_id: (action.payload as AssignTaskPayload).userId } : task).filter(task => (task.user_id === (action.payload as AssignTaskPayload).userId) || (task.user_id === null));
     case UPDATE_TASK:
       return state.map(task =>
         task.id === (action.payload as { id: string, title: string }).id ? { ...task, title: (action.payload as { id: string, title: string }).title } : task
@@ -28,6 +28,8 @@ export const taskReducer = (state: ITask[], action: TaskAction) => {
       );
     case SET_TASKS:
       return (action.payload as SetTasksPayload);
+    case SET_PUBLIC_TASKS:
+      return state.filter(task => task.user_id !== null).concat((action.payload as SetPublicTasksPayload));
     default:
       return state;
   }
