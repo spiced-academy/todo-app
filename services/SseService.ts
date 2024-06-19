@@ -42,6 +42,11 @@ export function receiveMessage(event: MessageEvent, context: TaskContextType) {
         case "tasks":
             context.setTasks(message.data)
             break
+
+        case "taskDeleted":
+            context.setTasks(context.tasks.filter((task) => task.id !== message.data))
+            break
+
         case "publicTasks":
             context.setPublicTasks(message.data)
             break
