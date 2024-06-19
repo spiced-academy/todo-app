@@ -28,7 +28,7 @@ const TaskList: FC<TaskListProps> = ({ users = [], completeTask, updateTask, ass
     // throw new Error('TasksContext is not available');
   }
 
-  const { tasks, assignTask: assignTaskContext, updateTask: updateTaskContext, deleteTask: deleteTaskContext, completeTask: completeTaskContext } = context;
+  const { tasks, updateTask: updateTaskContext, deleteTask: deleteTaskContext, completeTask: completeTaskContext } = context;
 
   const filteredTasks = tasks.filter((task) =>
     task.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -36,8 +36,8 @@ const TaskList: FC<TaskListProps> = ({ users = [], completeTask, updateTask, ass
 
   const handleAssignTask = async (taskId: string, userId: string) => {
     try {
-      await assignTaskToUser(taskId, userId );
-      assignTaskContext(taskId, userId);
+      // we don't need to change the task in the context here, because the context is updated by the sse service
+      await assignTaskToUser(taskId, userId);
     } catch (error) {
       console.error(error)
     }
