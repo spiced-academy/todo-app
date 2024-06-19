@@ -6,10 +6,10 @@ import { User } from "@prisma/client";
 interface TaskItemProps {
     key: string;
     task: Task;
+    users: User[];
     handleCompletedTask: (taskId: string) => void;
     handleEditTask: (taskId: string, newTitle: string) => void;
     handleAssignTask: (taskId: string, userId: string) => void;
-    users: User[];
     handleDeleteTask: (taskId: string) => void;
 }
 
@@ -43,7 +43,8 @@ const TaskItem: FC<TaskItemProps> = ({ task, handleDeleteTask, handleCompletedTa
                     </Editable>
                 </HStack>
                 <Spacer />
-                <Select value={task.user_id || ""} size="xs" onChange={(event) => handleAssignTask(task.id, event.target.value)} placeholder="Assign user" width={200} >
+                <Select value={task.user_id || "null"} size="xs" onChange={(event) => handleAssignTask(task.id, event.target.value)} placeholder="Assign user" width={200} >
+                    <option value="null">Public</option>
                     {users.map(user => (
                         <option key={user.id} value={user.id} >
                             {user.id === task.user_id ? 'me' : user.name}
