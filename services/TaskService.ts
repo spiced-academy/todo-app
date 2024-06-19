@@ -2,9 +2,10 @@ import prisma from "@/db/client";
 import { Task } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from '@/nextauth/authOptions';
-import { sendMessage } from "./SseService";
+import { sendMessage, broadcastMessage } from "./SseService";
 
 export const getNewTasksByUserId = async (userId: string): Promise<Task[]> => {
+    "use server";
     return prisma.task.findMany({
         where: {
             user_id: userId,
@@ -13,20 +14,48 @@ export const getNewTasksByUserId = async (userId: string): Promise<Task[]> => {
     })
 }
 
+export const isPublicTask = async (taskId: string): Promise<boolean> => {
+    "use server";
+    const task = await prisma.task.findUnique({
+        where: {
+            id: taskId
+        }
+    })
+    return task?.user_id === null
+}
+
 export const assignTaskToUser = async (taskId: string, userId: string): Promise<Task> => {
     "use server";
+    const task = await prisma.task.findUnique({
+        where: {
+            id: taskId
+        }
+    })
+    if (!task) {
+        throw new Error("Task not found!")
+    }
+
+    const formerUserId = task.user_id || "null"
     try {
         const result = await prisma.task.update({
             where: {
-            id: taskId
-        },
-        data: {
-            user_id: userId,
-            new: true
+                id: taskId
+            },
+            data: {
+                user_id: userId === "null" ? null : userId,
+                new: true
+            }
+        })
+
+        if (userId !== "null") {
+            sendMessage(userId, { type: "tasks", data: await getTasksByUserId(userId, true) })
         }
-    })
-    const tasks = await getTasksByUserId(userId)
-        sendMessage(userId, {type: "tasks", data: tasks})
+        if (formerUserId !== "null") {
+            sendMessage(formerUserId, { type: "tasks", data: await getTasksByUserId(formerUserId, true) })
+        }
+        if (formerUserId === "null" || userId === "null") {
+            broadcastMessage({ type: "publicTasks", data: await getPublicTasks() })
+        }
         return result
     } catch (error) {
         console.error(error)
@@ -49,28 +78,34 @@ export const createTask = async (title: string): Promise<Task> => {
     return result
 }
 
-export const getTasks = async () => {
+export const getPublicTasks = async () => {
+    "use server";
+    return getTasksByUserId("null", true)
+}
+
+export const getTasksOfCurrentUser = async (includePublicTasks = true) => {
     "use server";
     const session = await getServerSession(authOptions)
+    if (!session || !session.user) {
+        throw new Error("You must be logged in to get tasks!")
+    }
+
+    return getTasksByUserId(session.user.id, includePublicTasks)
+}
+
+export const getTasksByUserId = async (userId: string, includePublicTasks: boolean): Promise<Task[]> => {
+    const where = includePublicTasks ? { OR: [{ user_id: userId }, { user_id: null }] } : { user_id: userId }
+
     return prisma.task.findMany({
-        where: {
-            user_id: session?.user.id
-        },
+        where,
         orderBy: {
             created_at: "desc"
         }
     })
 }
 
-export const getTasksByUserId = async (userId: string): Promise<Task[]> => {
-    return prisma.task.findMany({
-        where: {
-            user_id: userId
-        }
-    })
-}
-
 export const getTasksByState = async (taskState: TaskState | undefined): Promise<Task[]> => {
+    "use server";
     if (taskState === "done") {
         return getDoneTasks()
     }
@@ -79,7 +114,7 @@ export const getTasksByState = async (taskState: TaskState | undefined): Promise
         return getUpcomingTasks()
     }
 
-    return getTasks()
+    return getTasksOfCurrentUser()
 }
 
 export const getUpcomingTasks = async () => {
@@ -121,7 +156,7 @@ export const completeTask = async (taskId: string): Promise<Task> => {
     if (!task) {
         throw new Error("Task not found!")
     }
-    const updatedTask =  prisma.task.update({
+    const updatedTask = prisma.task.update({
         where: {
             id: taskId
         },
@@ -134,11 +169,16 @@ export const completeTask = async (taskId: string): Promise<Task> => {
 
 export const deleteTask = async (taskId: string): Promise<void> => {
     "use server"
+    const isPublic = await isPublicTask(taskId)
     await prisma.task.delete({
         where: {
             id: taskId
         }
     })
+
+    if (isPublic) {
+        broadcastMessage({ type: "taskDeleted", data: taskId })
+    }
 }
 
 export const updateTask = async (taskId: string, title: string): Promise<Task> => {
@@ -158,12 +198,12 @@ export const getNumberOfTasksByState = async (state?: TaskState | undefined): Pr
     "use server"
     const session = await getServerSession(authOptions)
     return await prisma.task.count(
-    {
-        where: {
-            completed: state === "done",
-            user_id: session?.user.id
-        }
-    })
+        {
+            where: {
+                completed: state === "done",
+                user_id: session?.user.id
+            }
+        })
 }
 
 
