@@ -7,7 +7,7 @@ Task Tango is a simple to-do app designed for the Advanced Web Development Bootc
 -   Basic "TODO list" functionality
 -   Add, edit, and delete tasks
 -   Mark tasks as complete or incomplete
--   Persistent data storage
+-   Persistent data storage using MongoDB
 
 ### Future Enhancements
 
