@@ -20,7 +20,7 @@ Task Tango evolves alongside your learning journey, incorporating new features a
 -   **Part V - Prisma**: Use Prisma for database ORM to simplify data access and management.
 -   **Part VI - NextAuth**: Add authentication and authorization features using NextAuth.
 -   **Part VII - Docker**: Containerize the application using Docker for consistent and portable environments.
-    **Part VIII - SSE**: Implement Server-Sent Events (SSE) for real-time updates and notifications.
+-   **Part VIII - SSE**: Implement Server-Sent Events (SSE) for real-time updates and notifications.
 
 # Part I - Convert Todo App from JavaScript to TypeScript
 
