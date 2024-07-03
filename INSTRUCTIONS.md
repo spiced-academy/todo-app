@@ -57,10 +57,10 @@ In this project, you will enhance a TypeScript-based Todo App by integrating an 
 ### Update API Handlers
 
 -   **Convert API Handlers**
-    -   Update existing API handlers to interact with the SQL database instead of in-memory data.
+    -   Update existing API handlers to interact with the SQL database instead of MongoDB methods.
     -   Example tasks:
-        -   Update the `addTask` handler to insert new tasks into the SQL database.
-        -   Update the `getTasks` handler to fetch tasks from the SQL database.
+        -   Update the endpoint for adding a new task to insert tasks into the SQL database.
+        -   Update the endpoint for fetching tasks to retrieve tasks from the SQL database.
 
 ### Modify Components
 
