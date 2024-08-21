@@ -4,7 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    command: bash -c "npm install && npm run dev"
     volumes:
       - ./:/app
     ports:
