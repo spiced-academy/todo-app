@@ -45,6 +45,7 @@ services:
     volumes:
       - .:/e2e
     working_dir: /e2e
+    profiles: [test]
     entrypoint: cypress run
 
 volumes:
