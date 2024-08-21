@@ -36,6 +36,16 @@ services:
       - "1025:1025"
       - "8025:8025"
 
+  cypress:
+    image: cypress/included:12.0.0 # Use the appropriate Cypress version
+    environment:
+      - CYPRESS_baseUrl=http://nextjs:3000 # Base URL for Cypress tests
+    depends_on:
+      - nextjs
+    volumes:
+      - .:/e2e
+    working_dir: /e2e
+    entrypoint: cypress run
+
 volumes:
   postgres_data:
-
