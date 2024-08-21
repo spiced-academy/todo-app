@@ -12,6 +12,38 @@
     }
   ],
   "paths": {
+    "/login": {
+      "post": {
+        "summary": "Authenticate user and get token",
+        "operationId": "loginUser",
+        "tags": ["authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful authentication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
     "/tasks": {
       "get": {
         "summary": "List all tasks",
@@ -47,6 +79,13 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
     "schemas": {
       "Task": {
         "type": "object",
@@ -85,7 +124,38 @@
           }
         },
         "required": ["id", "title", "completed", "created_at", "updated_at"]
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "password123"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        },
+        "required": ["token"]
       }
     }
-  }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ]
 }
