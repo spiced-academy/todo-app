@@ -64,19 +64,19 @@ const RegisterComponent = ({ createUser }: RegistrationComponentProps) => {
       <form onSubmit={handleSubmit}>
         <FormControl>
           <FormLabel>Name</FormLabel> {/* Changed Username to Name */}
-          <Input type="text" placeholder="Enter your name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" /> {/* Enabled autocompletion for name field */}
+          <Input name="name" type="text" placeholder="Enter your name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" /> {/* Enabled autocompletion for name field */}
         </FormControl>
         <FormControl isRequired mt={4}> {/* Made email FormControl mandatory */}
           <FormLabel>Email</FormLabel>
-          <Input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} isRequired autoComplete="email" />
+          <Input name="email" type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} isRequired autoComplete="email" />
         </FormControl>
         <FormControl isRequired mt={4}> {/* Made password FormControl mandatory */}
           <FormLabel>Password</FormLabel>
-          <Input type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} isRequired />
+          <Input name="password" type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} isRequired />
         </FormControl>
         <FormControl isRequired mt={4}> {/* Made confirm password FormControl mandatory */}
           <FormLabel>Confirm Password</FormLabel>
-          <Input type="password" placeholder="Confirm your password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} isRequired />
+          <Input name="confirmPassword" type="password" placeholder="Confirm your password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} isRequired />
         </FormControl>
         <Button width="full" mt={4} type="submit">
           Register
