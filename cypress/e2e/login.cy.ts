@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 describe('Login Page', () => {
     it('should display the login page', () => {
       cy.visit('/login')
