@@ -30,4 +30,5 @@ RUN npm install
 EXPOSE 3000
 
 # Start command with nodemon for hot reloading
-CMD ["npm", "run", "dev"]
+ENTRYPOINT ["npm"]
+CMD ["run", "dev"]
