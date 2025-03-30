@@ -1,4 +1,4 @@
-# Part II - Migrate Todo App from TypeScript to SQL Integration
+# Part II - Migrate Todo App from No SQL to SQL Integration
 
 In this project, you will enhance a TypeScript-based Todo App by integrating an SQL database. This involves updating configurations, connecting to an SQL database, and migrating existing functionalities to work with the database.
 
