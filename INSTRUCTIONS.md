@@ -19,7 +19,6 @@ In this project, you will enhance a TypeScript-based Todo App by integrating an 
 
     ```javascript
     import pg from "pg";
-    require("dotenv").config();
 
     export const pool = new pg.Pool({
         host: process.env.PG_HOST || "localhost",
@@ -77,15 +76,6 @@ In this project, you will enhance a TypeScript-based Todo App by integrating an 
     -   Example tasks:
         -   Update types in `types/global.d.ts` to reflect the SQL data structure.
         -   Ensure all components and utility functions use the updated types.
-
-### Implement Database Migrations
-
--   **Set Up Migrations**
-    -   Create migration scripts to set up the initial database schema.
-    -   Add scripts for future database changes.
-    -   Example tasks:
-        -   Create an initial migration to create the `tasks` table.
-        -   Add a migration script to modify the `tasks` table if needed.
 
 ### Ensure Data Integrity
 
