@@ -37,7 +37,7 @@ In this project, you will enhance a TypeScript-based Todo App by integrating an 
         If you prefer to define the table structure manually, you can use the following SQL command:
 
         ```sql
-        CREATE TABLE tasks(
+        CREATE TABLE "Tasks"(
           id SERIAL PRIMARY KEY,
           title VARCHAR(255) NOT NULL,
           completed BOOLEAN DEFAULT FALSE,
